@@ -1,11 +1,2280 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
 ---
 
-<Layout>
-	<Welcome />
+<Layout title="Plan today. Play tomorrow. — Streamlined Task & Focus Canvas">
+  <!-- Sticky Nav Bar -->
+  <header class="sticky top-0 bg-canvas/80 backdrop-blur-md border-b border-hairline z-40 h-16 flex items-center transition-all duration-300">
+    <div class="max-w-[1400px] w-full mx-auto px-4 md:px-6 flex items-center justify-between">
+      <!-- Logo -->
+      <a href="#" class="flex items-center gap-2 group select-none">
+        <svg class="w-5 h-5 text-ink transition-transform duration-300 group-hover:rotate-90" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M15 50 L35 70 L60 45" stroke="currentColor" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+          <polygon points="60,18 86,45 60,72" fill="currentColor"/>
+        </svg>
+        <span class="font-sans font-semibold tracking-[-0.6px] text-lg text-ink">
+          Plan today. <span class="text-mute font-normal group-hover:text-primary transition-colors">Play tomorrow.</span>
+        </span>
+      </a>
+
+      <!-- Quick Metrics & Navigation -->
+      <div class="flex items-center gap-2">
+        <!-- Quick Stats Badge (Desktop) -->
+        <div class="hidden lg:flex items-center gap-2 bg-canvas-soft border border-hairline px-3 py-1 rounded-md text-xs shadow-level-1">
+          <div class="flex items-center gap-1" id="nav-streak-container" title="Day streak">
+            <span id="nav-streak-icon" class="text-warning text-xs">⚡</span>
+            <span class="text-body font-mono font-medium" id="nav-streak-count">0</span>
+          </div>
+          <span class="text-hairline-strong">·</span>
+          <div class="flex items-center gap-1.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-success animate-pulse-soft"></span>
+            <span class="text-body font-mono font-medium" id="nav-completed-count">0/0</span>
+          </div>
+          <span class="text-hairline-strong">·</span>
+          <div class="flex items-center gap-1">
+            <svg class="w-3 h-3 text-mute" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span class="text-body font-mono font-medium" id="nav-focus-time">0h 0m</span>
+          </div>
+        </div>
+
+        <!-- Tool Buttons -->
+        <div class="flex items-center gap-1">
+          <button id="settings-toggle" class="w-8 h-8 flex items-center justify-center border border-hairline bg-canvas hover:bg-canvas-soft-2 text-ink rounded-md hover:border-hairline-strong transition-all shadow-level-1 cursor-pointer" title="Settings">
+            <svg class="w-3.5 h-3.5 text-body" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- Command Palette Trigger Button (Mock Search Style) -->
+        <button id="cmd-palette-trigger" class="flex items-center justify-between gap-4 w-44 md:w-48 lg:w-52 h-8 px-3 border border-hairline bg-canvas-soft hover:bg-canvas hover:border-hairline-strong text-mute rounded-md text-xs font-mono transition-all cursor-pointer shadow-level-1">
+          <span class="flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5 text-mute" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <span class="text-mute font-sans">Search...</span>
+          </span>
+          <kbd class="px-1.5 py-0.5 bg-canvas border border-hairline rounded text-[10px] text-mute font-mono">⌘K</kbd>
+        </button>
+
+        <!-- Theme & View Controls -->
+        <div class="flex items-center gap-1">
+          <button id="dark-mode-toggle" class="w-8 h-8 flex items-center justify-center border border-hairline bg-canvas hover:bg-canvas-soft-2 text-ink rounded-md hover:border-hairline-strong transition-all shadow-level-1 cursor-pointer" title="Toggle Dark Mode">
+            <svg class="w-3.5 h-3.5 text-body" id="dark-mode-icon-sun" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+            <svg class="w-3.5 h-3.5 text-body hidden" id="dark-mode-icon-moon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+            </svg>
+          </button>
+          <button id="toggle-zen-btn" class="w-8 h-8 flex items-center justify-center border border-hairline bg-canvas hover:bg-canvas-soft-2 text-ink rounded-md hover:border-hairline-strong transition-all shadow-level-1 cursor-pointer" title="Toggle Zen Mode (Esc)">
+            <svg class="w-3.5 h-3.5 text-body" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Banner -->
+  <section id="hero-section" class="max-w-[1400px] w-full mx-auto px-4 md:px-6 pt-12 pb-6 transition-all duration-500">
+    <div class="max-w-3xl">
+      <!-- Section Eyebrow -->
+      <span class="caption-mono uppercase tracking-wider text-mute mb-3 block">Developer focus suite</span>
+      <!-- Headline (Sentence case, period-terminated) -->
+      <h1 class="display-xl text-ink mb-4">
+        Plan today. Play tomorrow.
+      </h1>
+      <!-- Lead Paragraph -->
+      <p class="body-lg text-body mb-6 max-w-2xl">
+        A minimalist workspace engineered to keep your focus intact. Categorize tasks, log deep-work metrics with the focus engine, and claim your tomorrow.
+      </p>
+
+      <!-- Keyboard Tip Badge -->
+      <div class="inline-flex items-center gap-2 bg-canvas border border-hairline px-3 py-1.5 rounded-pill text-xs shadow-level-2">
+        <span class="w-2 h-2 rounded-full bg-gradient-develop-start animate-pulse-soft"></span>
+        <span class="text-body font-mono">Tip: Press <kbd class="font-semibold text-ink">Ctrl + K</kbd> to launch the command menu.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick-Add Bar -->
+  <div id="quick-add-bar" class="max-w-[1400px] w-full mx-auto px-4 md:px-6 pb-4 relative z-10">
+    <div class="flex items-center gap-3">
+      <form id="quick-add-form" class="flex-1 flex items-center gap-2 bg-canvas border border-hairline hover:border-hairline-strong rounded-md px-3 py-2 transition-all shadow-level-1 focus-within:ring-1 focus-within:ring-cyan/50">
+        <svg class="w-4 h-4 text-mute shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+        </svg>
+        <input type="text" id="quick-add-input" placeholder="Quick add task... (just hit Enter) — ⌘⇧A" class="flex-1 bg-transparent text-sm text-ink outline-none placeholder:text-mute/60" autocomplete="off" />
+        <button type="submit" class="text-[11px] font-mono text-mute hover:text-ink bg-canvas-soft-2 hover:bg-canvas border border-hairline px-2 py-0.5 rounded transition-all">Add</button>
+      </form>
+      <span class="text-[10px] font-mono text-mute hidden md:block">⏎ add instantly</span>
+    </div>
+  </div>
+
+  <!-- Main Workspace Grid -->
+  <main id="app-grid" class="max-w-[1400px] w-full mx-auto px-4 md:px-6 pb-24 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start relative transition-all duration-500">
+    
+    <!-- LEFT COLUMN: Creator, Focus Timer, Metrics (5/12 cols) -->
+    <div id="left-column" class="lg:col-span-5 space-y-6 transition-all duration-500">
+      
+      <!-- active cpu focus timer (showcase dark band theme) -->
+      <div class="bg-surface-inverse text-on-surface-inverse rounded-lg p-6 shadow-level-4 relative overflow-hidden group">
+        <!-- Accent Glow background -->
+        <div class="absolute inset-0 bg-radial-gradient from-violet-deep/10 via-transparent to-transparent pointer-events-none"></div>
+        <div class="absolute -right-16 -top-16 w-36 h-36 bg-gradient-develop-end/10 rounded-full blur-2xl group-hover:scale-125 transition-transform duration-1000"></div>
+
+        <div class="relative z-10 flex flex-col justify-between h-full">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-cyan animate-pulse" id="timer-pulse-dot"></span>
+              <span class="caption-mono uppercase tracking-widest text-cyan font-semibold">Active CPU Engine</span>
+            </div>
+            <div class="flex items-center gap-1.5" id="timer-presets">
+              <button class="text-[10px] font-mono px-2 py-0.5 rounded border border-white/20 bg-white/5 hover:bg-white/10 text-white/90 active" data-time="1500">25m</button>
+              <button class="text-[10px] font-mono px-2 py-0.5 rounded border border-white/20 bg-white/5 hover:bg-white/10 text-white/60" data-time="300">5m</button>
+              <button class="text-[10px] font-mono px-2 py-0.5 rounded border border-white/20 bg-white/5 hover:bg-white/10 text-white/60" data-time="900">15m</button>
+            </div>
+          </div>
+
+          <!-- Digital Timer Clock -->
+          <div class="text-center py-4 relative">
+            <span class="font-mono text-7xl font-light tracking-tighter" id="timer-display">25:00</span>
+            <div class="w-full bg-white/10 h-[2px] mt-4 rounded-full overflow-hidden">
+              <div class="bg-gradient-develop-end h-full w-full transition-all duration-300" id="timer-progress-bar"></div>
+            </div>
+          </div>
+
+          <!-- Timer Actions & Link Task -->
+          <div class="mt-4 space-y-4">
+            <!-- Active Task Selector -->
+            <div>
+              <label for="timer-task-select" class="block text-[11px] font-mono uppercase tracking-wider text-white/50 mb-1">Focus Target</label>
+              <select id="timer-task-select" class="w-full bg-white/5 border border-white/10 rounded-sm text-xs py-1.5 px-2 text-white outline-none focus:border-cyan/50 focus:ring-1 focus:ring-cyan/50 cursor-pointer">
+                <option value="" class="bg-primary text-white">General task focus</option>
+              </select>
+            </div>
+
+            <!-- Controls row -->
+            <div class="flex items-center gap-3 pt-2">
+              <button id="timer-toggle-btn" class="flex-1 bg-white hover:bg-white/90 text-[#0a0a0a] font-medium rounded-pill h-10 text-sm flex items-center justify-center gap-1.5 transition-all shadow-md">
+                <svg class="w-4 h-4 fill-current" id="timer-toggle-icon" viewBox="0 0 24 24">
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+                <span id="timer-toggle-text">Start CPU Session</span>
+              </button>
+              <button id="timer-reset-btn" class="px-4 h-10 border border-white/20 bg-transparent hover:bg-white/5 text-white/90 rounded-pill text-sm transition-all">
+                Reset
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- task creation panel (card-marketing style) -->
+      <div class="bg-canvas border border-hairline rounded-lg p-6 shadow-level-2 relative">
+        <h3 class="display-sm text-ink mb-1">Add task.</h3>
+        <p class="body-sm text-mute mb-4">Input a new node into the task scheduler.</p>
+
+        <form id="create-task-form" class="space-y-4">
+          <!-- Title Input -->
+          <div>
+            <label for="task-title-input" class="block text-[11px] font-mono uppercase tracking-wider text-mute mb-1">Task Title</label>
+            <input type="text" id="task-title-input" required placeholder="e.g. Optimize page speed metrics" class="w-full bg-canvas border border-hairline rounded-sm h-10 px-3 text-sm text-ink focus:outline-none focus:border-hairline-strong focus:ring-1 focus:ring-hairline-strong placeholder:text-mute/60" />
+          </div>
+
+          <!-- Grid: Tags & Priority -->
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label for="task-category-select" class="block text-[11px] font-mono uppercase tracking-wider text-mute mb-1">Category</label>
+              <select id="task-category-select" class="w-full bg-canvas border border-hairline rounded-sm h-10 px-2 text-sm text-ink focus:outline-none focus:border-hairline-strong focus:ring-1 focus:ring-hairline-strong cursor-pointer">
+                <option value="work">Work</option>
+                <option value="personal">Personal</option>
+                <option value="leisure">Leisure</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="task-priority-select" class="block text-[11px] font-mono uppercase tracking-wider text-mute mb-1">Priority</label>
+              <select id="task-priority-select" class="w-full bg-canvas border border-hairline rounded-sm h-10 px-2 text-sm text-ink focus:outline-none focus:border-hairline-strong focus:ring-1 focus:ring-hairline-strong cursor-pointer">
+                <option value="low">Low</option>
+                <option value="medium" selected>Medium</option>
+                <option value="high">High</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Due Date -->
+          <div>
+            <label for="task-due-input" class="block text-[11px] font-mono uppercase tracking-wider text-mute mb-1">Due Date (Optional)</label>
+            <input type="date" id="task-due-input" class="w-full bg-canvas border border-hairline rounded-sm h-10 px-3 text-sm text-ink focus:outline-none focus:border-hairline-strong focus:ring-1 focus:ring-hairline-strong" />
+          </div>
+
+          <!-- Submit -->
+          <button type="submit" class="w-full bg-primary hover:bg-neutral-800 text-on-primary font-medium rounded-pill h-10 text-sm transition-all shadow-level-1 mt-2">
+            Schedule Task
+          </button>
+        </form>
+      </div>
+
+      <!-- analytics and system commands (card-soft style) -->
+      <div class="bg-canvas border border-hairline rounded-lg p-6 shadow-level-2">
+        <h3 class="display-sm text-ink mb-1">Board metrics.</h3>
+        <p class="body-sm text-mute mb-4">Live analytics from local session logs.</p>
+
+        <!-- Stats Grid -->
+        <div class="grid grid-cols-2 gap-3 mb-6">
+          <div class="bg-canvas-soft border border-hairline rounded p-3">
+            <span class="block text-[10px] font-mono uppercase tracking-wider text-mute mb-1">Completion</span>
+            <span class="display-md text-ink" id="stat-completion-pct">0%</span>
+            <div class="w-full bg-hairline h-1 rounded-full mt-2 overflow-hidden">
+              <div class="bg-success h-full w-0 transition-all duration-500" id="stat-completion-bar"></div>
+            </div>
+          </div>
+          <div class="bg-canvas-soft border border-hairline rounded p-3">
+            <span class="block text-[10px] font-mono uppercase tracking-wider text-mute mb-1">Total Focused</span>
+            <span class="display-md text-ink" id="stat-total-focus">0m</span>
+            <span class="block text-[10px] text-mute mt-2 font-mono">across all tasks</span>
+          </div>
+          <div class="bg-canvas-soft border border-hairline rounded p-3">
+            <span class="block text-[10px] font-mono uppercase tracking-wider text-mute mb-1">Level</span>
+            <span class="display-md text-ink flex items-center gap-2">
+              <svg class="w-4 h-4 text-warning" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
+              <span id="stat-level">1</span>
+            </span>
+            <div class="w-full bg-hairline h-1 rounded-full mt-2 overflow-hidden">
+              <div class="bg-warning h-full w-0 transition-all duration-500" id="stat-xp-bar"></div>
+            </div>
+            <span class="block text-[10px] text-mute mt-1 font-mono"><span id="stat-xp-current">0</span>/<span id="stat-xp-next">100</span> XP</span>
+          </div>
+          <div class="bg-canvas-soft border border-hairline rounded p-3">
+            <span class="block text-[10px] font-mono uppercase tracking-wider text-mute mb-1">Best Streak</span>
+            <span class="display-md text-ink" id="stat-best-streak">0</span>
+            <span class="block text-[10px] text-mute mt-2 font-mono">🔥 consecutive days</span>
+          </div>
+        </div>
+
+        <div class="space-y-3">
+          <span class="block text-[10px] font-mono uppercase tracking-wider text-mute">System Utilities</span>
+          <div class="flex flex-wrap gap-2">
+            <button id="export-data-btn" class="flex-1 py-1.5 px-3 bg-canvas hover:bg-canvas-soft-2 text-ink border border-hairline rounded-sm text-xs font-mono transition-all flex items-center justify-center gap-1.5 shadow-level-1">
+              <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+              Export JSON
+            </button>
+            <button id="import-data-btn" class="flex-1 py-1.5 px-3 bg-canvas hover:bg-canvas-soft-2 text-ink border border-hairline rounded-sm text-xs font-mono transition-all flex items-center justify-center gap-1.5 shadow-level-1">
+              <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+              </svg>
+              Import JSON
+            </button>
+            <input type="file" id="import-file-input" class="hidden" accept=".json" />
+          </div>
+          <button id="clear-all-btn" class="w-full py-1.5 px-3 text-error hover:bg-error-soft/30 hover:text-error-deep border border-error/20 hover:border-error-deep/20 rounded-sm text-xs font-mono transition-all flex items-center justify-center gap-1.5">
+            Reset All Database Logs
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN: Task List and Filter Views (7/12 cols) -->
+    <div id="right-column" class="lg:col-span-7 space-y-6 transition-all duration-500">
+      
+      <!-- Filter Bar & Search -->
+      <div class="bg-canvas border border-hairline rounded-lg p-4 shadow-level-2 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        
+        <!-- Tab Pills -->
+        <div class="flex items-center gap-1 overflow-x-auto pb-1 md:pb-0" id="filter-tabs">
+          <button class="tab-pill active" data-filter="all">All</button>
+          <button class="tab-pill" data-filter="work">Work</button>
+          <button class="tab-pill" data-filter="personal">Personal</button>
+          <button class="tab-pill" data-filter="leisure">Leisure</button>
+        </div>
+
+        <!-- Search input -->
+        <div class="relative flex-1 max-w-xs">
+          <input type="text" id="task-search-input" placeholder="Search tasks..." class="w-full bg-canvas border border-hairline rounded-sm h-8 pl-8 pr-3 text-xs text-ink focus:outline-none focus:border-hairline-strong placeholder:text-mute/60" />
+          <svg class="w-3.5 h-3.5 text-mute absolute left-2.5 top-1/2 -translate-y-1/2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </div>
+      </div>
+
+      <!-- Active Tasks Container -->
+      <div class="space-y-3">
+        <div class="flex items-center justify-between">
+          <h2 class="display-sm text-ink flex items-center gap-2">
+            <span id="tasks-section-title">Active Nodes</span>
+            <span class="caption-mono text-xs text-mute border border-hairline px-2 py-0.5 rounded-full bg-canvas-soft-2" id="active-tasks-badge">0</span>
+          </h2>
+          <div class="flex items-center gap-2">
+            <button id="shuffle-queue-btn" class="text-[11px] font-mono text-body hover:text-ink border border-hairline px-2 py-0.5 rounded hover:bg-canvas transition-all cursor-pointer hidden" title="Shuffle queue">
+              <svg class="w-3 h-3 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+              Shuffle
+            </button>
+            <button id="toggle-queue-view" class="text-[11px] font-mono text-body hover:text-ink border border-hairline px-2 py-0.5 rounded hover:bg-canvas transition-all cursor-pointer" title="Toggle queue view">
+              <span id="queue-view-label">Queue</span>
+            </button>
+            <span class="text-[11px] font-mono text-mute">Sort by:</span>
+            <select id="task-sort-select" class="bg-transparent border-0 text-[11px] font-mono text-ink outline-none cursor-pointer">
+              <option value="newest">Newest first</option>
+              <option value="oldest">Oldest first</option>
+              <option value="priority">Priority</option>
+              <option value="due">Due date</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="queue-banner" class="hidden text-[11px] font-mono text-body bg-gradient-develop-start/5 border border-gradient-develop-start/20 px-3 py-2 rounded-md flex items-center gap-2">
+          <svg class="w-3.5 h-3.5 text-gradient-develop-start shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+          <span id="queue-banner-text">Your focus queue for today. Pick one and go.</span>
+        </div>
+
+        <div id="active-tasks-list" class="space-y-3 min-h-[100px] transition-all duration-300">
+          <!-- Dynamic insertion -->
+        </div>
+      </div>
+
+      <!-- Completed Tasks Collapsible Card -->
+      <div class="border border-hairline rounded-lg bg-canvas-soft-2 overflow-hidden transition-all duration-300">
+        <button id="toggle-completed-btn" class="w-full px-5 py-4 flex items-center justify-between hover:bg-canvas-soft hover:text-ink text-body transition-colors">
+          <h2 class="display-sm text-sm font-semibold flex items-center gap-2">
+            Archived / Completed
+            <span class="caption-mono text-xs text-mute border border-hairline px-2 py-0.5 rounded-full bg-canvas" id="completed-tasks-badge">0</span>
+          </h2>
+          <svg class="w-4 h-4 text-mute transform transition-transform duration-300" id="completed-caret" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
+
+        <div id="completed-tasks-wrapper" class="hidden border-t border-hairline bg-canvas p-4 space-y-3 transition-all duration-300">
+          <div id="completed-tasks-list" class="space-y-3">
+            <!-- Dynamic insertion -->
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Zen Active Dashboard Overlay -->
+  <div id="zen-container" class="hidden max-w-3xl w-full mx-auto px-4 py-24 flex-col items-center justify-center text-center space-y-12 transition-all duration-500">
+    <div class="space-y-4">
+      <span class="caption-mono text-xs text-cyan tracking-widest uppercase border border-cyan/30 px-3 py-1 rounded-full bg-cyan-deep/10">Zen CPU active</span>
+      <h2 id="zen-task-title" class="display-lg text-ink">General task focus</h2>
+      <p class="body-md text-mute max-w-md mx-auto">Take deep breath. Release all distractions. Concentrate.</p>
+    </div>
+
+    <div class="relative py-8">
+      <div class="font-mono text-[9vw] md:text-9xl font-light text-ink tracking-tighter" id="zen-timer-display">25:00</div>
+      <div class="w-64 mx-auto bg-hairline h-[3px] mt-6 rounded-full overflow-hidden">
+        <div class="bg-gradient-develop-start h-full w-full transition-all duration-300" id="zen-timer-progress"></div>
+      </div>
+    </div>
+
+    <div class="flex items-center justify-center gap-4">
+      <button id="zen-timer-toggle" class="px-8 py-3 bg-primary text-on-primary font-medium rounded-pill transition-all shadow-level-3">
+        Pause session
+      </button>
+      <button id="zen-exit-btn" class="px-6 py-3 border border-hairline bg-canvas text-ink rounded-pill transition-all hover:bg-canvas-soft shadow-level-1">
+        Exit Zen
+      </button>
+    </div>
+  </div>
+
+  <!-- Command Palette Modal (ex-modal-card style) -->
+  <div id="cmd-palette" class="fixed inset-0 bg-primary/40 backdrop-blur-sm z-50 flex items-start justify-center pt-24 hidden transition-opacity duration-300">
+    <div class="bg-canvas border border-hairline w-full max-w-xl rounded-lg shadow-level-5 overflow-hidden flex flex-col mx-4 transition-transform duration-300 scale-95" id="cmd-dialog">
+      <!-- Search Input Container -->
+      <div class="relative border-b border-hairline p-4 flex items-center">
+        <svg class="w-4 h-4 text-mute mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+        <input type="text" id="cmd-input" placeholder="Type a command or task query..." class="w-full bg-transparent text-sm text-ink outline-none" autocomplete="off" />
+        <span class="caption-mono text-[10px] text-mute border border-hairline px-2 py-0.5 rounded bg-canvas-soft-2 ml-2">ESC</span>
+      </div>
+
+      <!-- Content Area -->
+      <div class="max-h-[350px] overflow-y-auto p-2" id="cmd-results">
+        <!-- commands template -->
+        <div class="text-[10px] font-mono uppercase tracking-wider text-mute px-3 py-1.5">System Commands</div>
+        <div class="space-y-1">
+          <button class="cmd-item" data-action="create-task">
+            <span class="flex items-center gap-2">
+              <svg class="w-3.5 h-3.5 text-mute" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+              </svg>
+              <span>Create new task</span>
+            </span>
+            <kbd class="cmd-shortcut">/add &lt;title&gt;</kbd>
+          </button>
+          <button class="cmd-item" data-action="zen-toggle">
+            <span class="flex items-center gap-2">
+              <svg class="w-3.5 h-3.5 text-mute" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              </svg>
+              <span>Toggle Zen Focus mode</span>
+            </span>
+            <kbd class="cmd-shortcut">/zen</kbd>
+          </button>
+          <button class="cmd-item" data-action="clear-completed">
+            <span class="flex items-center gap-2">
+              <svg class="w-3.5 h-3.5 text-mute" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+              <span>Clear completed tasks</span>
+            </span>
+            <kbd class="cmd-shortcut">/clear</kbd>
+          </button>
+          <button class="cmd-item" data-action="quick-focus">
+            <span class="flex items-center gap-2">
+              <svg class="w-3.5 h-3.5 text-mute" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>Toggle Focus Timer</span>
+            </span>
+            <kbd class="cmd-shortcut">/focus</kbd>
+          </button>
+        </div>
+
+        <div class="text-[10px] font-mono uppercase tracking-wider text-mute px-3 py-1.5 mt-3">Matched Tasks</div>
+        <div class="space-y-1" id="cmd-tasks-list">
+          <p class="text-xs text-mute px-3 py-2">No matching tasks found.</p>
+        </div>
+      </div>
+      
+      <!-- Footer details -->
+      <div class="bg-canvas-soft-2 border-t border-hairline p-3 px-4 flex items-center justify-between text-[11px] text-mute">
+        <span>Use <span class="font-mono text-ink">↑↓</span> to navigate, <span class="font-mono text-ink">Enter</span> to select.</span>
+        <span>Esc to close.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div id="settings-modal" class="fixed inset-0 bg-primary/40 backdrop-blur-sm z-50 flex items-center justify-center hidden transition-opacity duration-300">
+    <div class="bg-canvas border border-hairline w-full max-w-md rounded-lg shadow-level-5 overflow-hidden mx-4 transition-transform duration-300 scale-95" id="settings-dialog">
+      <div class="flex items-center justify-between border-b border-hairline px-5 py-4">
+        <h3 class="display-sm text-ink text-base">Settings</h3>
+        <button id="settings-close-btn" class="w-6 h-6 flex items-center justify-center text-mute hover:text-ink border border-hairline rounded hover:bg-canvas-soft-2 transition-all cursor-pointer">
+          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <div class="p-5 space-y-5">
+        <div>
+          <span class="block text-[10px] font-mono uppercase tracking-wider text-mute mb-3">Streak Type</span>
+          <div class="flex items-center gap-3">
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="radio" name="streak-type" value="tasks" class="cursor-pointer" />
+              <span class="text-sm text-ink">Tasks completed</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="radio" name="streak-type" value="focus" class="cursor-pointer" />
+              <span class="text-sm text-ink">Focus sessions</span>
+            </label>
+          </div>
+        </div>
+        <div>
+          <span class="block text-[10px] font-mono uppercase tracking-wider text-mute mb-3">Show queue (max tasks)</span>
+          <select id="settings-queue-size" class="w-20 bg-canvas border border-hairline rounded-sm h-8 px-2 text-sm text-ink focus:outline-none focus:border-hairline-strong cursor-pointer">
+            <option value="3">3</option>
+            <option value="5">5</option>
+            <option value="0">All</option>
+          </select>
+        </div>
+        <div>
+          <span class="block text-[10px] font-mono uppercase tracking-wider text-mute mb-2">Tour</span>
+          <button id="restart-tour-btn" class="text-xs font-mono text-body hover:text-ink border border-hairline px-3 py-1.5 rounded hover:bg-canvas-soft-2 transition-all cursor-pointer">Show intro tour</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- One-Task Focus Lock -->
+  <div id="focus-lock" class="fixed inset-0 z-40 bg-canvas-soft hidden">
+    <div class="max-w-2xl mx-auto px-6 py-16 flex flex-col h-full">
+      <div class="flex items-center justify-between mb-8">
+        <span class="caption-mono text-xs text-mute uppercase tracking-wider">Focus Target</span>
+        <button id="focus-lock-exit" class="text-xs font-mono text-body hover:text-ink border border-hairline px-3 py-1 rounded hover:bg-canvas transition-all cursor-pointer">Back to all tasks</button>
+      </div>
+      <div class="flex-1 flex flex-col items-center justify-center space-y-8 text-center">
+        <div class="w-12 h-12 rounded-full bg-gradient-develop-start/10 flex items-center justify-center">
+          <svg class="w-6 h-6 text-gradient-develop-start" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
+        <h2 id="focus-lock-title" class="display-lg text-ink">No task selected</h2>
+        <p id="focus-lock-subtitle" class="body-md text-mute max-w-md">Focus on this single task. Everything else can wait.</p>
+        <div class="flex items-center gap-4">
+          <button id="focus-lock-start-btn" class="px-6 py-2 bg-primary text-on-primary font-medium rounded-pill text-sm transition-all shadow-level-2">
+            Start timer
+          </button>
+          <button id="focus-lock-complete-btn" class="px-6 py-2 border border-hairline bg-canvas text-ink rounded-pill text-sm transition-all hover:bg-canvas-soft shadow-level-1">
+            Mark done
+          </button>
+        </div>
+      </div>
+      <div class="mt-auto pt-8 border-t border-hairline">
+        <div class="flex items-center justify-between">
+          <span class="text-[11px] font-mono text-mute">Next in queue</span>
+          <span id="focus-lock-next" class="text-xs text-body">—</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Onboarding Tour -->
+  <div id="tour-overlay" class="fixed inset-0 z-50 hidden">
+    <div id="tour-spotlight" class="absolute rounded-lg shadow-[0_0_0_9999px_rgba(0,0,0,0.5)] transition-all duration-300 pointer-events-none hidden"></div>
+    <div id="tour-tooltip" class="absolute max-w-xs bg-canvas border border-hairline rounded-lg shadow-level-5 p-5 hidden transition-all duration-300">
+      <div class="flex items-center justify-between mb-3">
+        <span class="caption-mono text-[10px] text-mute uppercase tracking-wider" id="tour-step-indicator">1 / 4</span>
+        <button id="tour-skip-btn" class="text-[11px] font-mono text-mute hover:text-ink transition-colors cursor-pointer">Skip →</button>
+      </div>
+      <h4 class="display-sm text-sm text-ink mb-1" id="tour-title">Welcome</h4>
+      <p class="body-sm text-body" id="tour-desc">Tour description</p>
+      <div class="flex items-center justify-between mt-4 pt-3 border-t border-hairline">
+        <div class="flex items-center gap-1.5" id="tour-dots"></div>
+        <div class="flex items-center gap-2">
+          <button id="tour-prev-btn" class="text-[11px] font-mono text-mute hover:text-ink px-2 py-1 rounded hover:bg-canvas-soft-2 transition-all cursor-pointer hidden">Back</button>
+          <button id="tour-next-btn" class="text-xs font-medium bg-primary text-on-primary px-4 py-1.5 rounded-pill hover:opacity-90 transition-all cursor-pointer">Next</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification System container (slides in from bottom right) -->
+  <div id="toast-container" class="fixed bottom-6 right-6 z-50 space-y-2 pointer-events-none max-w-sm w-full"></div>
+
+  <!-- Professional Footer -->
+  <footer class="mt-auto border-t border-hairline bg-canvas relative z-10 transition-all duration-300">
+    <div class="max-w-[1400px] w-full mx-auto px-4 md:px-6 py-12 flex flex-col md:flex-row items-center justify-between gap-6">
+      <div class="flex items-center gap-2">
+        <svg class="w-4 h-4 text-mute" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M15 50 L35 70 L60 45" stroke="currentColor" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+          <polygon points="60,18 86,45 60,72" fill="currentColor"/>
+        </svg>
+        <span class="caption-mono text-xs text-mute">
+          Plan today. Play tomorrow. Built with Astro & Tailwind 4.
+        </span>
+      </div>
+      <div class="flex items-center gap-6">
+        <a href="#" class="caption-mono text-xs text-body hover:text-ink transition-colors underline decoration-hairline">
+          Back to top
+        </a>
+      </div>
+    </div>
+  </footer>
 </Layout>
+
+<style>
+  /* Custom Styles for Interactive Elements */
+  
+  .tab-pill {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    color: var(--color-body);
+    background-color: var(--color-canvas);
+    border: 1px solid var(--color-hairline);
+    border-radius: var(--radius-pill-sm);
+    padding: 4px 16px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .tab-pill:hover {
+    color: var(--color-ink);
+    border-color: var(--color-hairline-strong);
+    background-color: var(--color-canvas-soft-2);
+  }
+  .tab-pill.active {
+    color: var(--color-on-primary);
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+  }
+
+  .cmd-item {
+    width: 100%;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    font-size: 13px;
+    font-family: var(--font-sans);
+    color: var(--color-ink);
+    border-radius: var(--radius-sm);
+    transition: background-color 0.15s;
+    cursor: pointer;
+  }
+  .cmd-item:hover, .cmd-item.selected {
+    background-color: var(--color-canvas-soft-2);
+  }
+  .cmd-shortcut {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--color-mute);
+    background: var(--color-canvas-soft-2);
+    border: 1px solid var(--color-hairline);
+    padding: 1px 6px;
+    border-radius: 4px;
+  }
+
+  /* Custom Checkbox styles */
+  .custom-checkbox {
+    appearance: none;
+    -webkit-appearance: none;
+    background-color: var(--color-canvas);
+    border: 1px solid var(--color-hairline-strong);
+    padding: 8px;
+    border-radius: var(--radius-sm);
+    display: inline-block;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .custom-checkbox:checked {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+  }
+  .custom-checkbox:checked::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 6px;
+    width: 4px;
+    height: 9px;
+    border: solid var(--color-on-primary);
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+
+  /* Task action buttons */
+  .task-lock-trigger, .task-focus-trigger, .task-delete-trigger {
+    cursor: pointer;
+  }
+
+  /* Settings modal radio */
+  #settings-modal input[type="radio"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    border: 2px solid var(--color-hairline-strong);
+    border-radius: 50%;
+    position: relative;
+    transition: all 0.15s;
+  }
+  #settings-modal input[type="radio"]:checked {
+    border-color: var(--color-primary);
+    border-width: 4px;
+  }
+
+  /* Queue banner */
+  #queue-banner {
+    font-family: var(--font-mono);
+  }
+
+  /* Focus lock */
+  #focus-lock {
+    z-index: 45;
+  }
+
+  /* Tour */
+  #tour-overlay {
+    z-index: 100;
+  }
+  #tour-spotlight {
+    z-index: 101;
+    box-shadow: 0 0 0 2px var(--color-cyan), 0 0 0 9999px rgba(0,0,0,0.5);
+  }
+  #tour-tooltip {
+    z-index: 102;
+  }
+</style>
+
+<script>
+  // CLIENT STATE MANAGEMENT
+  interface Task {
+    id: string;
+    title: string;
+    category: 'work' | 'personal' | 'leisure';
+    priority: 'low' | 'medium' | 'high';
+    dueDate: string;
+    completed: boolean;
+    focusTimeSpent: number; // in seconds
+    createdAt: number;
+  }
+
+  let tasks: Task[] = [];
+  let filterType = 'all';
+  let searchQuery = '';
+  let activeTimerId: number | null = null;
+  let timerDuration = 1500; // 25 minutes default
+  let timerRemaining = 1500;
+  let timerRunning = false;
+  let focusAccumulatedThisSession = 0;
+  let linkedTaskId: string | null = null;
+  let isZenMode = false;
+  let completedOpen = false;
+
+  // ADHD-feature state
+  let isQueueMode = true;
+  let queue: Task[] = [];
+  let isFocusLocked = false;
+  let focusLockedTaskId: string | null = null;
+  let settings = { streakType: 'tasks', queueSize: 3 };
+  let streakData = { current: 0, best: 0, lastActiveDate: '', dailyDoneToday: false };
+  let xpData = { total: 0, level: 1 };
+  const XP_PER_LEVEL = 100;
+
+  // Local Storage Keys
+  const STORAGE_KEY = 'plan-today-tasks-db';
+  const METRIC_KEY = 'plan-today-focus-total';
+  const XP_KEY = 'plan-today-xp';
+  const STREAK_KEY = 'plan-today-streak';
+  const SETTINGS_KEY = 'plan-today-settings';
+  const QUEUE_DATE_KEY = 'plan-today-queue-date';
+  const TOUR_KEY = 'plan-today-tour-done';
+
+  // Tour data
+  const TOUR_STEPS = [
+    { targetId: 'quick-add-input', title: 'Add tasks instantly.', desc: 'Type a task and hit Enter. No forms, no clicks. That\'s the whole flow.', placement: 'bottom' },
+    { targetId: 'active-tasks-list', title: 'Your daily queue.', desc: 'Your top tasks for today, auto-picked by priority & due date. Lock onto one.', placement: 'top' },
+    { targetId: 'timer-toggle-btn', title: 'Focus timer.', desc: 'Pick a task, choose duration, hit Start. Track deep work in focused blocks.', placement: 'top' },
+    { targetId: 'stat-completion-pct', title: 'Streaks & XP.', desc: 'Complete tasks → earn XP → level up. Don\'t break the streak.', placement: 'top' }
+  ];
+  let tourStep = -1;
+
+  // INITIALIZE STATE
+  function init() {
+    loadData();
+    loadXpData();
+    loadStreakData();
+    loadSettings();
+    checkStreak();
+    generateQueue();
+    setupEventListeners();
+    updateUI();
+    renderXpDisplay();
+    const isDark = document.documentElement.classList.contains('dark');
+    updateDarkModeIcon(isDark);
+    if (!localStorage.getItem(TOUR_KEY)) startTour();
+  }
+
+  function loadData() {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      try {
+        tasks = JSON.parse(saved);
+      } catch (e) {
+        tasks = [];
+      }
+    } else {
+      // Default placeholder tasks
+      tasks = [
+        {
+          id: '1',
+          title: 'Plan the upcoming workspace deployment schedule',
+          category: 'work',
+          priority: 'high',
+          dueDate: new Date().toISOString().split('T')[0],
+          completed: false,
+          focusTimeSpent: 1200,
+          createdAt: Date.now() - 3600000
+        },
+        {
+          id: '2',
+          title: 'Review web interface guidelines documentation',
+          category: 'work',
+          priority: 'medium',
+          dueDate: '',
+          completed: false,
+          focusTimeSpent: 0,
+          createdAt: Date.now() - 7200000
+        },
+        {
+          id: '3',
+          title: 'Hydrate properly and go for an evening run',
+          category: 'personal',
+          priority: 'low',
+          dueDate: '',
+          completed: true,
+          focusTimeSpent: 0,
+          createdAt: Date.now() - 10800000
+        }
+      ];
+      saveData();
+    }
+  }
+
+  function saveData() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+  }
+
+  // === ADHD FEATURES: XP, STREAK, QUEUE ===
+  function loadXpData() {
+    const saved = localStorage.getItem(XP_KEY);
+    if (saved) {
+      try { xpData = JSON.parse(saved); } catch (e) { xpData = { total: 0, level: 1 }; }
+    }
+  }
+
+  function saveXpData() {
+    localStorage.setItem(XP_KEY, JSON.stringify(xpData));
+  }
+
+  function loadStreakData() {
+    const saved = localStorage.getItem(STREAK_KEY);
+    if (saved) {
+      try { streakData = JSON.parse(saved); } catch (e) { resetStreakData(); }
+    }
+  }
+
+  function saveStreakData() {
+    localStorage.setItem(STREAK_KEY, JSON.stringify(streakData));
+  }
+
+  function resetStreakData() {
+    streakData = { current: 0, best: 0, lastActiveDate: '', dailyDoneToday: false };
+  }
+
+  function loadSettings() {
+    const saved = localStorage.getItem(SETTINGS_KEY);
+    if (saved) {
+      try { settings = JSON.parse(saved); } catch (e) { settings = { streakType: 'tasks', queueSize: 3 }; }
+    }
+  }
+
+  function saveSettings() {
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+  }
+
+  function checkStreak() {
+    const today = new Date().toISOString().split('T')[0];
+    if (streakData.lastActiveDate === today) {
+      streakData.dailyDoneToday = true;
+      return;
+    }
+    const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+    if (streakData.lastActiveDate !== yesterday) {
+      streakData.current = 0;
+      streakData.dailyDoneToday = false;
+      saveStreakData();
+    }
+  }
+
+  function recordActivity() {
+    const today = new Date().toISOString().split('T')[0];
+    if (!streakData.dailyDoneToday) {
+      if (streakData.lastActiveDate !== today) {
+        streakData.current++;
+        streakData.best = Math.max(streakData.best, streakData.current);
+      }
+      streakData.lastActiveDate = today;
+      streakData.dailyDoneToday = true;
+      saveStreakData();
+    }
+  }
+
+  function addXp(amount: number) {
+    const oldLevel = xpData.level;
+    xpData.total += amount;
+    xpData.level = Math.floor(xpData.total / XP_PER_LEVEL) + 1;
+    saveXpData();
+    renderXpDisplay();
+    if (xpData.level > oldLevel) {
+      showToast(`🎉 Level up! You're now level ${xpData.level}!`);
+      const statLvl = document.getElementById('stat-level');
+      if (statLvl) { statLvl.classList.remove('animate-level-up'); void statLvl.offsetWidth; statLvl.classList.add('animate-level-up'); }
+    }
+  }
+
+  function getTaskXp(task: Task): number {
+    const scores = { low: 10, medium: 25, high: 50 };
+    return scores[task.priority];
+  }
+
+  function getXpForLevel(level: number): number {
+    return (level - 1) * XP_PER_LEVEL;
+  }
+
+  function renderXpDisplay() {
+    const xpInLevel = xpData.total - getXpForLevel(xpData.level);
+    const xpPct = Math.min(100, (xpInLevel / XP_PER_LEVEL) * 100);
+    const statLevel = document.getElementById('stat-level');
+    if (statLevel) statLevel.textContent = xpData.level.toString();
+    const statBar = document.getElementById('stat-xp-bar');
+    if (statBar) statBar.style.width = `${xpPct}%`;
+    const currentEl = document.getElementById('stat-xp-current');
+    if (currentEl) currentEl.textContent = xpInLevel.toString();
+    const nextEl = document.getElementById('stat-xp-next');
+    if (nextEl) nextEl.textContent = XP_PER_LEVEL.toString();
+    const bestStreak = document.getElementById('stat-best-streak');
+    if (bestStreak) bestStreak.textContent = streakData.best.toString();
+  }
+
+  function updateStreakDisplay() {
+    const streakEl = document.getElementById('nav-streak-count');
+    if (streakEl) streakEl.textContent = streakData.current.toString();
+    const icon = document.getElementById('nav-streak-icon');
+    if (icon) {
+      if (streakData.current >= 3) {
+        icon.innerHTML = '🔥';
+      } else if (streakData.current > 0) {
+        icon.innerHTML = '⚡';
+      } else {
+        icon.innerHTML = '○';
+      }
+    }
+  }
+
+  function generateQueue() {
+    const today = new Date().toISOString().split('T')[0];
+    const lastQueueDate = localStorage.getItem(QUEUE_DATE_KEY);
+    const active = tasks.filter(t => !t.completed);
+    if (active.length === 0) { queue = []; return; }
+    if (lastQueueDate !== today) {
+      localStorage.setItem(QUEUE_DATE_KEY, today);
+      const queueLimit = settings.queueSize > 0 ? settings.queueSize : active.length;
+      queue = scoreSortTasks(active).slice(0, queueLimit);
+      if (queue.length === 0) queue = active.slice(0, queueLimit);
+    } else {
+      const queueLimit = settings.queueSize > 0 ? settings.queueSize : active.length;
+      queue = scoreSortTasks(active).slice(0, queueLimit);
+    }
+  }
+
+  function scoreSortTasks(taskList: Task[]): Task[] {
+    return [...taskList].sort((a, b) => {
+      let scoreA = 0, scoreB = 0;
+      const priorityScores = { high: 30, medium: 15, low: 0 };
+      scoreA += priorityScores[a.priority];
+      scoreB += priorityScores[b.priority];
+      if (a.dueDate) {
+        const daysUntilDue = (new Date(a.dueDate).getTime() - Date.now()) / 86400000;
+        if (daysUntilDue < 0) scoreA += 50;
+        else if (daysUntilDue < 1) scoreA += 40;
+        else if (daysUntilDue < 3) scoreA += 25;
+        else if (daysUntilDue < 7) scoreA += 10;
+      }
+      if (b.dueDate) {
+        const daysUntilDue = (new Date(b.dueDate).getTime() - Date.now()) / 86400000;
+        if (daysUntilDue < 0) scoreB += 50;
+        else if (daysUntilDue < 1) scoreB += 40;
+        else if (daysUntilDue < 3) scoreB += 25;
+        else if (daysUntilDue < 7) scoreB += 10;
+      }
+      return scoreB - scoreA;
+    });
+  }
+
+  function getActiveDisplayList(): Task[] {
+    const active = tasks.filter(t => !t.completed);
+    if (isQueueMode && settings.queueSize > 0) {
+      return queue.filter(q => !q.completed);
+    }
+    return active;
+  }
+
+  function getFocusTimeTotal(): number {
+    return tasks.reduce((acc, t) => acc + (t.focusTimeSpent || 0), 0) + (parseInt(localStorage.getItem(METRIC_KEY) || '0', 10));
+  }
+
+  function addGlobalFocusTime(seconds: number) {
+    const prev = parseInt(localStorage.getItem(METRIC_KEY) || '0', 10);
+    localStorage.setItem(METRIC_KEY, (prev + seconds).toString());
+  }
+
+  // UI STATE UPDATES
+  function updateUI() {
+    renderTasksList();
+    renderTaskSelectDropdown();
+    renderStats();
+    updateNavCounts();
+    updateStreakDisplay();
+    renderXpDisplay();
+    renderQueueUI();
+  }
+
+  function renderQueueUI() {
+    const banner = document.getElementById('queue-banner');
+    const shuffleBtn = document.getElementById('shuffle-queue-btn');
+    const viewLabel = document.getElementById('queue-view-label');
+    const titleEl = document.getElementById('tasks-section-title');
+    if (!banner || !shuffleBtn || !viewLabel || !titleEl) return;
+    if (isQueueMode && settings.queueSize > 0) {
+      banner.classList.remove('hidden');
+      shuffleBtn.classList.remove('hidden');
+      viewLabel.textContent = 'All Tasks';
+      titleEl.textContent = "Today's Queue";
+      const active = tasks.filter(t => !t.completed);
+      const remaining = queue.filter(q => !q.completed).length;
+      banner.innerHTML = `
+        <svg class="w-3.5 h-3.5 text-gradient-develop-start shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+        </svg>
+        <span id="queue-banner-text">${remaining} of ${queue.length} tasks left in queue (${active.length} total active). Pick one and go.</span>
+      `;
+    } else {
+      banner.classList.add('hidden');
+      shuffleBtn.classList.add('hidden');
+      viewLabel.textContent = 'Queue';
+      titleEl.textContent = 'Active Nodes';
+    }
+  }
+
+  function toggleDarkMode() {
+    const html = document.documentElement;
+    const isDark = html.classList.toggle('dark');
+    localStorage.setItem('plan-today-theme', isDark ? 'dark' : 'light');
+    updateDarkModeIcon(isDark);
+  }
+
+  function updateDarkModeIcon(isDark: boolean) {
+    const sun = document.getElementById('dark-mode-icon-sun');
+    const moon = document.getElementById('dark-mode-icon-moon');
+    if (!sun || !moon) return;
+    if (isDark) {
+      sun.classList.add('hidden');
+      moon.classList.remove('hidden');
+    } else {
+      sun.classList.remove('hidden');
+      moon.classList.add('hidden');
+    }
+  }
+
+  function updateNavCounts() {
+    const completed = tasks.filter(t => t.completed).length;
+    const total = tasks.length;
+    
+    const countEl = document.getElementById('nav-completed-count');
+    if (countEl) {
+      countEl.textContent = `${completed}/${total}`;
+    }
+
+    const totalSeconds = getFocusTimeTotal();
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const navFocusEl = document.getElementById('nav-focus-time');
+    if (navFocusEl) {
+      navFocusEl.textContent = `${hours}h ${minutes}m`;
+    }
+  }
+
+  function renderStats() {
+    const completedCount = tasks.filter(t => t.completed).length;
+    const totalCount = tasks.length;
+    const pct = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
+
+    const pctText = document.getElementById('stat-completion-pct');
+    if (pctText) pctText.textContent = `${pct}%`;
+
+    const pctBar = document.getElementById('stat-completion-bar');
+    if (pctBar) {
+      pctBar.style.width = `${pct}%`;
+    }
+
+    const totalFocusEl = document.getElementById('stat-total-focus');
+    if (totalFocusEl) {
+      const totalSec = getFocusTimeTotal();
+      if (totalSec >= 3600) {
+        totalFocusEl.textContent = `${(totalSec / 3600).toFixed(1)}h`;
+      } else {
+        totalFocusEl.textContent = `${Math.round(totalSec / 60)}m`;
+      }
+    }
+  }
+
+  function renderTaskSelectDropdown() {
+    const select = document.getElementById('timer-task-select') as HTMLSelectElement;
+    if (!select) return;
+
+    // Preserve selection if it still exists
+    const currentSel = select.value;
+    select.innerHTML = '<option value="">General task focus</option>';
+
+    tasks.filter(t => !t.completed).forEach(task => {
+      const opt = document.createElement('option');
+      opt.value = task.id;
+      opt.textContent = `[${task.category.toUpperCase()}] ${task.title}`;
+      opt.className = 'bg-surface-inverse text-white';
+      if (task.id === currentSel) opt.selected = true;
+      select.appendChild(opt);
+    });
+  }
+
+  function renderTasksList() {
+    const activeList = document.getElementById('active-tasks-list');
+    const completedList = document.getElementById('completed-tasks-list');
+    
+    if (!activeList || !completedList) return;
+
+    // Filter logic
+    let filtered = tasks.filter(t => {
+      const matchesFilter = filterType === 'all' || t.category === filterType;
+      const matchesSearch = t.title.toLowerCase().includes(searchQuery.toLowerCase());
+      return matchesFilter && matchesSearch;
+    });
+
+    // Sort logic
+    const sortVal = (document.getElementById('task-sort-select') as HTMLSelectElement)?.value || 'newest';
+    filtered.sort((a, b) => {
+      if (sortVal === 'newest') return b.createdAt - a.createdAt;
+      if (sortVal === 'oldest') return a.createdAt - b.createdAt;
+      if (sortVal === 'priority') {
+        const score = { high: 3, medium: 2, low: 1 };
+        return score[b.priority] - score[a.priority];
+      }
+      if (sortVal === 'due') {
+        if (!a.dueDate) return 1;
+        if (!b.dueDate) return -1;
+        return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
+      }
+      return 0;
+    });
+
+    const completedTasks = filtered.filter(t => t.completed);
+
+    // Queue mode: show queue items first, then rest
+    let activeTasks: Task[];
+    if (isQueueMode && settings.queueSize > 0) {
+      const queueIds = new Set(queue.filter(q => !q.completed).map(q => q.id));
+      const queueItems = filtered.filter(t => !t.completed && queueIds.has(t.id));
+      const restItems = filtered.filter(t => !t.completed && !queueIds.has(t.id));
+      activeTasks = [...queueItems, ...restItems];
+    } else {
+      activeTasks = filtered.filter(t => !t.completed);
+    }
+
+    // Badges update
+    const activeBadge = document.getElementById('active-tasks-badge');
+    if (activeBadge) activeBadge.textContent = activeTasks.length.toString();
+
+    const completedBadge = document.getElementById('completed-tasks-badge');
+    if (completedBadge) completedBadge.textContent = completedTasks.length.toString();
+
+    // Render active
+    if (activeTasks.length === 0) {
+      activeList.innerHTML = `
+        <div class="border border-hairline border-dashed rounded-lg p-8 bg-canvas text-center shadow-level-1">
+          <p class="body-sm text-mute">No active tasks in this space.</p>
+          <p class="text-[11px] text-mute/80 mt-1 font-mono">Create a task to get started.</p>
+        </div>
+      `;
+    } else {
+      activeList.innerHTML = activeTasks.map(t => createTaskRowHTML(t)).join('');
+    }
+
+    // Render completed
+    if (completedTasks.length === 0) {
+      completedList.innerHTML = `
+        <p class="body-sm text-mute text-center py-4">No completed tasks yet.</p>
+      `;
+    } else {
+      completedList.innerHTML = completedTasks.map(t => createTaskRowHTML(t)).join('');
+    }
+
+    // Bind item listeners
+    bindTaskItemEventListeners();
+  }
+
+  function createTaskRowHTML(task: Task): string {
+    const priorityColors = {
+      low: 'bg-cyan-soft text-cyan-deep border-cyan/20',
+      medium: 'bg-warning-soft text-warning-deep border-warning/20',
+      high: 'bg-error-soft text-error-deep border-error/20'
+    };
+
+    const isTimerActiveOnThis = linkedTaskId === task.id && timerRunning;
+    const focusMinutes = Math.round((task.focusTimeSpent || 0) / 60);
+
+    return `
+      <div class="group border border-hairline rounded-md p-4 bg-canvas hover:border-hairline-strong transition-all shadow-level-2 hover:shadow-level-3 flex items-start justify-between gap-4 ${isTimerActiveOnThis ? 'ring-1 ring-cyan border-cyan' : ''}" data-id="${task.id}">
+        <div class="flex items-start gap-3 flex-1 min-w-0">
+          <input type="checkbox" class="custom-checkbox mt-1 task-complete-checkbox" ${task.completed ? 'checked' : ''} />
+          
+          <div class="space-y-1 flex-1 min-w-0">
+            <span class="block body-md font-sans text-ink ${task.completed ? 'line-through text-mute/60' : ''} break-words leading-tight">
+              ${escapeHTML(task.title)}
+            </span>
+            
+            <!-- Metadata row -->
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="caption-mono text-[10px] text-body uppercase border border-hairline bg-canvas-soft-2 px-1.5 py-0.2 rounded font-medium">
+                ${task.category}
+              </span>
+              
+              <span class="caption-mono text-[10px] uppercase border px-1.5 py-0.2 rounded font-medium ${priorityColors[task.priority]}">
+                ${task.priority}
+              </span>
+
+              ${task.dueDate ? `
+                <span class="caption-mono text-[10px] text-mute flex items-center gap-1">
+                  <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  ${task.dueDate}
+                </span>
+              ` : ''}
+
+              ${focusMinutes > 0 ? `
+                <span class="caption-mono text-[10px] text-violet-deep bg-violet-soft/30 border border-violet-soft px-1.5 py-0.2 rounded flex items-center gap-1">
+                  <svg class="w-3 h-3 text-violet-deep" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Focused: ${focusMinutes}m
+                </span>
+              ` : ''}
+            </div>
+          </div>
+        </div>
+
+        <!-- Action tools (always visible for low friction) -->
+        <div class="flex items-center gap-1.5 shrink-0">
+          ${!task.completed ? `
+            <button class="task-focus-trigger p-1.5 hover:bg-canvas-soft-2 border border-hairline rounded transition-colors text-body hover:text-violet-deep" title="Focus on this task">
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </button>
+            <button class="task-lock-trigger p-1.5 hover:bg-canvas-soft-2 border border-hairline rounded transition-colors text-body hover:text-gradient-develop-start" title="Lock onto this task">
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+            </button>
+          ` : ''}
+          <button class="task-delete-trigger p-1.5 hover:bg-error-soft/30 border border-hairline rounded transition-colors text-mute hover:text-error-deep" title="Delete task">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    `;
+  }
+
+  function bindTaskItemEventListeners() {
+    document.querySelectorAll('.task-complete-checkbox').forEach(cb => {
+      cb.addEventListener('change', (e) => {
+        const id = (e.target as HTMLElement).closest('[data-id]')?.getAttribute('data-id');
+        if (id) toggleTaskCompletion(id);
+      });
+    });
+
+    document.querySelectorAll('.task-focus-trigger').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const id = (e.target as HTMLElement).closest('[data-id]')?.getAttribute('data-id');
+        if (id) startFocusOnTask(id);
+      });
+    });
+
+    document.querySelectorAll('.task-delete-trigger').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const id = (e.target as HTMLElement).closest('[data-id]')?.getAttribute('data-id');
+        if (id) deleteLocalTask(id);
+      });
+    });
+
+    document.querySelectorAll('.task-lock-trigger').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const id = (e.target as HTMLElement).closest('[data-id]')?.getAttribute('data-id');
+        if (id) enterFocusLock(id);
+      });
+    });
+  }
+
+  // UTILITY HELPER
+  function escapeHTML(str: string): string {
+    return str.replace(/[&<>'"]/g, 
+      tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+    );
+  }
+
+  // TASK MUTATIONS
+  function toggleTaskCompletion(id: string) {
+    const task = tasks.find(t => t.id === id);
+    if (!task) return;
+
+    const wasCompleted = task.completed;
+    task.completed = !task.completed;
+    
+    if (task.completed && linkedTaskId === id) {
+      linkedTaskId = null;
+      const select = document.getElementById('timer-task-select') as HTMLSelectElement;
+      if (select) select.value = '';
+    }
+
+    saveData();
+    generateQueue();
+    
+    if (task.completed && !wasCompleted) {
+      const xp = getTaskXp(task);
+      addXp(xp);
+      if (settings.streakType === 'tasks') recordActivity();
+      showToast(`✅ "${task.title}" — +${xp} XP`);
+      updateStreakDisplay();
+    } else {
+      showToast(task.completed ? 'Task completed!' : 'Task restored.');
+    }
+    
+    updateUI();
+  }
+
+  function deleteLocalTask(id: string) {
+    const index = tasks.findIndex(t => t.id === id);
+    if (index === -1) return;
+
+    const taskTitle = tasks[index].title;
+    tasks.splice(index, 1);
+
+    if (linkedTaskId === id) {
+      linkedTaskId = null;
+      const select = document.getElementById('timer-task-select') as HTMLSelectElement;
+      if (select) select.value = '';
+    }
+
+    saveData();
+    updateUI();
+    showToast(`Deleted: "${taskTitle}"`);
+  }
+
+  function startFocusOnTask(id: string, skipScroll = false) {
+    const task = tasks.find(t => t.id === id);
+    if (!task) return;
+
+    linkedTaskId = id;
+    const select = document.getElementById('timer-task-select') as HTMLSelectElement;
+    if (select) select.value = id;
+
+    // Reset remaining if timer isn't running
+    if (!timerRunning) {
+      timerRemaining = timerDuration;
+      updateTimerDisplay();
+    }
+
+    showToast(`CPU engine targeting: "${task.title}"`);
+    if (!skipScroll) scrollToTimer();
+  }
+
+  function scrollToTimer() {
+    const timerCard = document.getElementById('timer-toggle-btn');
+    timerCard?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  // TIMER ENGINE LOGIC
+  function setupTimer() {
+    const toggleBtn = document.getElementById('timer-toggle-btn');
+    const resetBtn = document.getElementById('timer-reset-btn');
+    const select = document.getElementById('timer-task-select') as HTMLSelectElement;
+    const presets = document.getElementById('timer-presets');
+    const zenToggle = document.getElementById('zen-timer-toggle');
+
+    toggleBtn?.addEventListener('click', toggleTimer);
+    zenToggle?.addEventListener('click', toggleTimer);
+    resetBtn?.addEventListener('click', resetTimer);
+
+    select?.addEventListener('change', (e) => {
+      linkedTaskId = (e.target as HTMLSelectElement).value || null;
+      showToast(linkedTaskId ? 'Focus session target updated.' : 'Session target reset to General.');
+    });
+
+    presets?.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        presets.querySelectorAll('button').forEach(b => b.classList.remove('active', 'text-white/90'));
+        presets.querySelectorAll('button').forEach(b => b.classList.add('text-white/60'));
+        
+        const target = e.target as HTMLButtonElement;
+        target.classList.add('active', 'text-white/90');
+        target.classList.remove('text-white/60');
+
+        const secs = parseInt(target.getAttribute('data-time') || '1500', 10);
+        timerDuration = secs;
+        resetTimer();
+      });
+    });
+  }
+
+  function toggleTimer() {
+    if (timerRunning) {
+      pauseTimer();
+    } else {
+      startTimer();
+    }
+  }
+
+  function startTimer() {
+    if (timerRunning) return;
+
+    timerRunning = true;
+    updateTimerControlUI(true);
+
+    activeTimerId = window.setInterval(() => {
+      timerRemaining--;
+      focusAccumulatedThisSession++;
+
+      // Log progress to the linked task periodically (every 5 seconds)
+      if (linkedTaskId && focusAccumulatedThisSession % 5 === 0) {
+        const task = tasks.find(t => t.id === linkedTaskId);
+        if (task) {
+          task.focusTimeSpent = (task.focusTimeSpent || 0) + 5;
+          saveData();
+          updateUI();
+        }
+      } else if (!linkedTaskId && focusAccumulatedThisSession % 5 === 0) {
+        addGlobalFocusTime(5);
+        updateUI();
+      }
+
+      if (timerRemaining <= 0) {
+        handleTimerCompletion();
+      } else {
+        updateTimerDisplay();
+      }
+    }, 1000);
+
+    showToast('Focus CPU session running.');
+  }
+
+  function pauseTimer() {
+    if (!timerRunning || activeTimerId === null) return;
+
+    window.clearInterval(activeTimerId);
+    activeTimerId = null;
+    timerRunning = false;
+
+    updateTimerControlUI(false);
+    showToast('Focus session paused.');
+  }
+
+  function resetTimer() {
+    pauseTimer();
+    timerRemaining = timerDuration;
+    focusAccumulatedThisSession = 0;
+    updateTimerDisplay();
+    showToast('Timer logs reset.');
+  }
+
+  function handleTimerCompletion() {
+    pauseTimer();
+    timerRemaining = timerDuration;
+    focusAccumulatedThisSession = 0;
+    updateTimerDisplay();
+
+    // Trigger success audio cue
+    playAlertSound();
+
+    let completionMsg = 'Focus block completed! Well focused.';
+    if (linkedTaskId) {
+      const task = tasks.find(t => t.id === linkedTaskId);
+      if (task) {
+        completionMsg = `Focus block completed for: "${task.title}"!`;
+      }
+    }
+
+    showToast(completionMsg);
+  }
+
+  function playAlertSound() {
+    // Generate a clean synth beep using Web Audio API so we don't need external audio files!
+    try {
+      const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5 note
+      osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.15); // E5 note
+      osc.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.3); // G5 note
+      
+      gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.55);
+      
+      osc.start(audioCtx.currentTime);
+      osc.stop(audioCtx.currentTime + 0.6);
+    } catch (e) {
+      // AudioContext fallback
+    }
+  }
+
+  function updateTimerDisplay() {
+    const mins = Math.floor(timerRemaining / 60);
+    const secs = timerRemaining % 60;
+    const timeStr = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    
+    // Normal view
+    const display = document.getElementById('timer-display');
+    if (display) display.textContent = timeStr;
+
+    // Progress bar
+    const progressPct = (timerRemaining / timerDuration) * 100;
+    const bar = document.getElementById('timer-progress-bar');
+    if (bar) bar.style.width = `${progressPct}%`;
+
+    // Zen view
+    const zenDisplay = document.getElementById('zen-timer-display');
+    if (zenDisplay) zenDisplay.textContent = timeStr;
+
+    const zenBar = document.getElementById('zen-timer-progress');
+    if (zenBar) zenBar.style.width = `${progressPct}%`;
+
+    // Document title
+    document.title = timerRunning 
+      ? `(${timeStr}) Plan today. Play tomorrow.` 
+      : 'Plan today. Play tomorrow. — Streamlined Task & Focus Canvas';
+  }
+
+  function updateTimerControlUI(isRunning: boolean) {
+    const toggleBtn = document.getElementById('timer-toggle-btn');
+    const toggleIcon = document.getElementById('timer-toggle-icon');
+    const toggleText = document.getElementById('timer-toggle-text');
+    const zenToggle = document.getElementById('zen-timer-toggle');
+
+    if (!toggleBtn || !toggleIcon || !toggleText) return;
+
+    if (isRunning) {
+      toggleText.textContent = 'Pause Session';
+      toggleIcon.innerHTML = '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>'; // pause icon
+      toggleBtn.classList.remove('bg-white', 'text-[#0a0a0a]');
+      toggleBtn.classList.add('bg-white/10', 'text-white', 'hover:bg-white/20');
+      
+      if (zenToggle) zenToggle.textContent = 'Pause Session';
+    } else {
+      toggleText.textContent = 'Start CPU Session';
+      toggleIcon.innerHTML = '<path d="M8 5v14l11-7z"/>'; // play icon
+      toggleBtn.classList.remove('bg-white/10', 'text-white', 'hover:bg-white/20');
+      toggleBtn.classList.add('bg-white', 'text-[#0a0a0a]');
+      
+      if (zenToggle) zenToggle.textContent = 'Start Session';
+    }
+  }
+
+  // EVENT LISTENERS
+  function setupEventListeners() {
+    // Task creation form
+    const form = document.getElementById('create-task-form') as HTMLFormElement;
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      createTaskFromForm();
+    });
+
+    // Task search
+    const search = document.getElementById('task-search-input') as HTMLInputElement;
+    search?.addEventListener('input', (e) => {
+      searchQuery = (e.target as HTMLInputElement).value;
+      renderTasksList();
+    });
+
+    // Filter pills
+    const tabs = document.getElementById('filter-tabs');
+    tabs?.querySelectorAll('.tab-pill').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        tabs.querySelectorAll('.tab-pill').forEach(b => b.classList.remove('active'));
+        const target = e.target as HTMLButtonElement;
+        target.classList.add('active');
+        filterType = target.getAttribute('data-filter') || 'all';
+        renderTasksList();
+      });
+    });
+
+    // Sort select
+    const sort = document.getElementById('task-sort-select') as HTMLSelectElement;
+    sort?.addEventListener('change', () => {
+      renderTasksList();
+    });
+
+    // Toggle completed collapsible
+    const toggleCompletedBtn = document.getElementById('toggle-completed-btn');
+    const completedWrapper = document.getElementById('completed-tasks-wrapper');
+    const completedCaret = document.getElementById('completed-caret');
+    toggleCompletedBtn?.addEventListener('click', () => {
+      completedOpen = !completedOpen;
+      if (completedOpen) {
+        completedWrapper?.classList.remove('hidden');
+        completedCaret?.classList.add('rotate-180');
+      } else {
+        completedWrapper?.classList.add('hidden');
+        completedCaret?.classList.remove('rotate-180');
+      }
+    });
+
+    // Zen Mode toggles
+    document.getElementById('toggle-zen-btn')?.addEventListener('click', toggleZenMode);
+    document.getElementById('zen-exit-btn')?.addEventListener('click', toggleZenMode);
+
+    // Export/Import JSON data
+    document.getElementById('export-data-btn')?.addEventListener('click', exportDatabase);
+    document.getElementById('import-data-btn')?.addEventListener('click', () => {
+      document.getElementById('import-file-input')?.click();
+    });
+    document.getElementById('import-file-input')?.addEventListener('change', importDatabase);
+
+    // Clear db
+    document.getElementById('clear-all-btn')?.addEventListener('click', clearAllLogs);
+
+    // Command palette triggers
+    document.getElementById('cmd-palette-trigger')?.addEventListener('click', openCommandPalette);
+
+    // Dark mode toggle
+    document.getElementById('dark-mode-toggle')?.addEventListener('click', toggleDarkMode);
+
+    // Quick-add form
+    document.getElementById('quick-add-form')?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      quickAddTask();
+    });
+    document.getElementById('quick-add-input')?.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') (e.target as HTMLInputElement).blur();
+    });
+
+    // Queue toggle & shuffle
+    document.getElementById('toggle-queue-view')?.addEventListener('click', () => {
+      isQueueMode = !isQueueMode;
+      renderTasksList();
+      renderQueueUI();
+    });
+    document.getElementById('shuffle-queue-btn')?.addEventListener('click', () => {
+      const active = tasks.filter(t => !t.completed);
+      const queueLimit = settings.queueSize > 0 ? settings.queueSize : active.length;
+      queue = scoreSortTasks(active).slice(0, queueLimit);
+      renderTasksList();
+      renderQueueUI();
+      showToast('Queue shuffled.');
+    });
+
+    // Settings modal
+    document.getElementById('settings-toggle')?.addEventListener('click', openSettingsModal);
+    document.getElementById('settings-close-btn')?.addEventListener('click', closeSettingsModal);
+    document.querySelectorAll('input[name="streak-type"]').forEach(radio => {
+      radio.addEventListener('change', (e) => {
+        settings.streakType = (e.target as HTMLInputElement).value;
+        saveSettings();
+      });
+    });
+    document.getElementById('settings-queue-size')?.addEventListener('change', (e) => {
+      settings.queueSize = parseInt((e.target as HTMLSelectElement).value, 10);
+      saveSettings();
+      generateQueue();
+      renderTasksList();
+      renderQueueUI();
+    });
+
+    // Focus lock
+    document.getElementById('focus-lock-exit')?.addEventListener('click', exitFocusLock);
+    document.getElementById('focus-lock-start-btn')?.addEventListener('click', () => {
+      if (focusLockedTaskId) {
+        startFocusOnTask(focusLockedTaskId);
+        exitFocusLock();
+      }
+    });
+    document.getElementById('focus-lock-complete-btn')?.addEventListener('click', () => {
+      if (focusLockedTaskId) {
+        toggleTaskCompletion(focusLockedTaskId);
+        exitFocusLock();
+      }
+    });
+
+    // Tour
+    document.getElementById('tour-next-btn')?.addEventListener('click', () => {
+      if (tourStep === TOUR_STEPS.length - 1) { endTour(); }
+      else { tourStep++; showTourStep(); }
+    });
+    document.getElementById('tour-prev-btn')?.addEventListener('click', () => {
+      if (tourStep > 0) { tourStep--; showTourStep(); }
+    });
+    document.getElementById('tour-skip-btn')?.addEventListener('click', endTour);
+    document.getElementById('restart-tour-btn')?.addEventListener('click', () => {
+      localStorage.removeItem(TOUR_KEY);
+      closeSettingsModal();
+      startTour();
+    });
+
+    // Keyboard Shortcuts
+    document.addEventListener('keydown', (e) => {
+      // Toggle command palette: Cmd/Ctrl + K
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        openCommandPalette();
+      }
+
+      // Quick-add focus: Cmd/Ctrl + Shift + A
+      if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key.toLowerCase() === 'a') {
+        e.preventDefault();
+        const input = document.getElementById('quick-add-input');
+        if (input) input.focus();
+      }
+      
+      // Zen mode toggle: Esc
+      if (e.key === 'Escape') {
+        if (!document.getElementById('cmd-palette')?.classList.contains('hidden')) {
+          closeCommandPalette();
+        } else if (isZenMode) {
+          toggleZenMode();
+        } else if (isFocusLocked) {
+          exitFocusLock();
+        } else if (!document.getElementById('settings-modal')?.classList.contains('hidden')) {
+          closeSettingsModal();
+        }
+      }
+    });
+  }
+
+  function createTaskFromForm() {
+    const titleInput = document.getElementById('task-title-input') as HTMLInputElement;
+    const categorySelect = document.getElementById('task-category-select') as HTMLSelectElement;
+    const prioritySelect = document.getElementById('task-priority-select') as HTMLSelectElement;
+    const dueInput = document.getElementById('task-due-input') as HTMLInputElement;
+
+    if (!titleInput.value.trim()) return;
+
+    const newTask: Task = {
+      id: Date.now().toString(),
+      title: titleInput.value.trim(),
+      category: categorySelect.value as any,
+      priority: prioritySelect.value as any,
+      dueDate: dueInput.value,
+      completed: false,
+      focusTimeSpent: 0,
+      createdAt: Date.now()
+    };
+
+    tasks.push(newTask);
+    saveData();
+    generateQueue();
+    
+    titleInput.value = '';
+    dueInput.value = '';
+    
+    updateUI();
+    showToast(`Scheduled node: "${newTask.title}"`);
+  }
+
+  // ZEN MODE TOGGLE
+  function toggleZenMode() {
+    isZenMode = !isZenMode;
+    const header = document.querySelector('header');
+    const hero = document.getElementById('hero-section');
+    const grid = document.getElementById('app-grid');
+    const zen = document.getElementById('zen-container');
+    const body = document.body;
+
+    if (isZenMode) {
+      header?.classList.add('opacity-0', '-translate-y-full');
+      hero?.classList.add('hidden');
+      document.getElementById('quick-add-bar')?.classList.add('hidden');
+      document.querySelector('footer')?.classList.add('hidden');
+      grid?.classList.add('hidden');
+      zen?.classList.remove('hidden');
+      zen?.classList.add('flex');
+      
+      // Set active task title in Zen Mode
+      const zenTitle = document.getElementById('zen-task-title');
+      if (zenTitle) {
+        if (linkedTaskId) {
+          const task = tasks.find(t => t.id === linkedTaskId);
+          zenTitle.textContent = task ? task.title : 'Focus session';
+        } else {
+          zenTitle.textContent = 'General Focus Session';
+        }
+      }
+      
+      showToast('Entered Zen Mode. press Esc to exit.');
+    } else {
+      header?.classList.remove('opacity-0', '-translate-y-full');
+      hero?.classList.remove('hidden');
+      document.getElementById('quick-add-bar')?.classList.remove('hidden');
+      document.querySelector('footer')?.classList.remove('hidden');
+      grid?.classList.remove('hidden');
+      zen?.classList.add('hidden');
+      zen?.classList.remove('flex');
+      
+      showToast('Zen mode deactivated.');
+    }
+  }
+
+  // EXPORT/IMPORT UTILITIES
+  function exportDatabase() {
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(tasks, null, 2));
+    const dlAnchorElem = document.createElement('a');
+    dlAnchorElem.setAttribute("href", dataStr);
+    dlAnchorElem.setAttribute("download", `plan-today-play-tomorrow-${new Date().toISOString().split('T')[0]}.json`);
+    dlAnchorElem.click();
+    showToast('Database exported successfully.');
+  }
+
+  function importDatabase(event: any) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        const imported = JSON.parse(e.target?.result as string);
+        if (Array.isArray(imported)) {
+          tasks = imported;
+          saveData();
+          updateUI();
+          showToast('Tasks database imported successfully.');
+        } else {
+          showToast('Invalid JSON file format.', true);
+        }
+      } catch (err) {
+        showToast('Error reading import file.', true);
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  function clearAllLogs() {
+    if (confirm('Are you absolutely sure you want to purge your entire focus metrics database and all tasks? This is irreversible.')) {
+      tasks = [];
+      localStorage.removeItem(STORAGE_KEY);
+      localStorage.removeItem(METRIC_KEY);
+      saveData();
+      updateUI();
+      resetTimer();
+      showToast('All system database logs cleared.');
+    }
+  }
+
+  // CUSTOM TOAST ALERTS
+  function showToast(message: string, isError = false) {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+
+    const toast = document.createElement('div');
+    toast.className = `p-4 rounded border text-xs font-mono flex items-center justify-between gap-3 shadow-level-4 bg-canvas transition-all duration-300 transform translate-y-2 opacity-0 pointer-events-auto ${
+      isError 
+        ? 'border-error/20 text-error-deep bg-error-soft/10' 
+        : 'border-hairline text-ink bg-canvas'
+    }`;
+    toast.innerHTML = `
+      <div class="flex items-center gap-2">
+        <span class="w-1.5 h-1.5 rounded-full ${isError ? 'bg-error' : 'bg-success'}"></span>
+        <span>${escapeHTML(message)}</span>
+      </div>
+      <button class="text-mute hover:text-ink font-sans font-bold">×</button>
+    `;
+
+    container.appendChild(toast);
+
+    // Slide in
+    setTimeout(() => {
+      toast.classList.remove('translate-y-2', 'opacity-0');
+    }, 10);
+
+    const closeBtn = toast.querySelector('button');
+    closeBtn?.addEventListener('click', () => {
+      toast.classList.add('translate-y-2', 'opacity-0');
+      setTimeout(() => toast.remove(), 300);
+    });
+
+    // Auto dismiss after 4 seconds
+    setTimeout(() => {
+      if (toast.parentNode) {
+        toast.classList.add('translate-y-2', 'opacity-0');
+        setTimeout(() => toast.remove(), 300);
+      }
+    }, 4000);
+  }
+
+  // COMMAND PALETTE
+  let cmdIndex = 0;
+  let matches: any[] = [];
+
+  function openCommandPalette() {
+    const palette = document.getElementById('cmd-palette');
+    const dialog = document.getElementById('cmd-dialog');
+    const input = document.getElementById('cmd-input') as HTMLInputElement;
+
+    palette?.classList.remove('hidden');
+    setTimeout(() => {
+      dialog?.classList.remove('scale-95');
+    }, 10);
+    
+    input.value = '';
+    input.focus();
+    cmdIndex = 0;
+    
+    renderCommandMatches();
+  }
+
+  function closeCommandPalette() {
+    const palette = document.getElementById('cmd-palette');
+    const dialog = document.getElementById('cmd-dialog');
+    
+    dialog?.classList.add('scale-95');
+    setTimeout(() => {
+      palette?.classList.add('hidden');
+    }, 150);
+  }
+
+  function renderCommandMatches() {
+    const input = document.getElementById('cmd-input') as HTMLInputElement;
+    const query = input.value.trim().toLowerCase();
+    const tasksList = document.getElementById('cmd-tasks-list');
+    
+    if (!tasksList) return;
+
+    // Filter tasks
+    const activeTasks = tasks.filter(t => !t.completed);
+    const matchedTasks = query 
+      ? activeTasks.filter(t => t.title.toLowerCase().includes(query)) 
+      : activeTasks.slice(0, 3); // show top 3 when query is empty
+
+    if (matchedTasks.length === 0) {
+      tasksList.innerHTML = '<p class="text-xs text-mute px-3 py-2">No matching tasks found.</p>';
+      matches = [];
+    } else {
+      tasksList.innerHTML = matchedTasks.map((t, idx) => `
+        <button class="cmd-item cmd-task-item" data-id="${t.id}" data-index="${idx}">
+          <span class="flex items-center gap-2 text-left truncate">
+            <span class="w-1.5 h-1.5 rounded-full bg-success"></span>
+            <span class="truncate">${escapeHTML(t.title)}</span>
+          </span>
+          <span class="text-[10px] font-mono text-mute uppercase">[${t.category}]</span>
+        </button>
+      `).join('');
+
+      matches = matchedTasks;
+      
+      // Bind task clicks inside palette
+      document.querySelectorAll('.cmd-task-item').forEach(item => {
+        item.addEventListener('click', (e) => {
+          const id = item.getAttribute('data-id');
+          if (id) {
+            startFocusOnTask(id);
+            closeCommandPalette();
+          }
+        });
+      });
+    }
+
+    updateCmdSelection();
+  }
+
+  function updateCmdSelection() {
+    const items = document.querySelectorAll('.cmd-item');
+    if (items.length === 0) return;
+    items.forEach((item, idx) => {
+      if (idx === cmdIndex) {
+        item.classList.add('selected');
+        item.scrollIntoView({ block: 'nearest' });
+      } else {
+        item.classList.remove('selected');
+      }
+    });
+  }
+
+  (function setupCommandPaletteEventsOnce() {
+    const input = document.getElementById('cmd-input');
+    const palette = document.getElementById('cmd-palette');
+
+    palette?.addEventListener('click', (e) => {
+      if (e.target === palette) closeCommandPalette();
+    });
+
+    input?.addEventListener('input', () => {
+      cmdIndex = 0;
+      renderCommandMatches();
+    });
+
+    input?.addEventListener('keydown', (e: any) => {
+      const items = document.querySelectorAll('.cmd-item');
+      if (items.length === 0) return;
+      
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        cmdIndex = (cmdIndex + 1) % items.length;
+        updateCmdSelection();
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        cmdIndex = (cmdIndex - 1 + items.length) % items.length;
+        updateCmdSelection();
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        const selected = items[cmdIndex] as HTMLElement;
+        if (selected) executeCommandElement(selected);
+      }
+    });
+  })();
+
+  function executeCommandElement(el: HTMLElement) {
+    const action = el.getAttribute('data-action');
+    const id = el.getAttribute('data-id');
+    const input = document.getElementById('cmd-input') as HTMLInputElement;
+    const value = input.value.trim();
+
+    if (action === 'create-task') {
+      // Check if user specified a title after /add
+      const prefix = '/add';
+      let title = '';
+      if (value.startsWith(prefix)) {
+        title = value.substring(prefix.length).trim();
+      }
+      
+      if (title) {
+        const newTask: Task = {
+          id: Date.now().toString(),
+          title,
+          category: 'work',
+          priority: 'medium',
+          dueDate: '',
+          completed: false,
+          focusTimeSpent: 0,
+          createdAt: Date.now()
+        };
+        tasks.push(newTask);
+        saveData();
+        updateUI();
+        showToast(`Scheduled: "${newTask.title}"`);
+        closeCommandPalette();
+      } else {
+        // focus creation input
+        const formInput = document.getElementById('task-title-input');
+        formInput?.focus();
+        closeCommandPalette();
+        showToast('Input your task details.');
+      }
+    } else if (action === 'zen-toggle') {
+      toggleZenMode();
+      closeCommandPalette();
+    } else if (action === 'clear-completed') {
+      tasks = tasks.filter(t => !t.completed);
+      saveData();
+      updateUI();
+      showToast('Cleared completed archive.');
+      closeCommandPalette();
+    } else if (action === 'quick-focus') {
+      toggleTimer();
+      closeCommandPalette();
+    } else if (id) {
+      // It's a task item
+      startFocusOnTask(id);
+      closeCommandPalette();
+    }
+  }
+
+  // === NEW FEATURES: QUICK-ADD, SETTINGS, FOCUS LOCK ===
+
+  function quickAddTask() {
+    const input = document.getElementById('quick-add-input') as HTMLInputElement;
+    if (!input || !input.value.trim()) return;
+    const newTask: Task = {
+      id: Date.now().toString(),
+      title: input.value.trim(),
+      category: 'work',
+      priority: 'medium',
+      dueDate: '',
+      completed: false,
+      focusTimeSpent: 0,
+      createdAt: Date.now()
+    };
+    tasks.push(newTask);
+    saveData();
+    generateQueue();
+    updateUI();
+    showToast(`➕ Added: "${newTask.title}"`);
+    input.value = '';
+    input.focus();
+  }
+
+  (function setupSettingsModalOnce() {
+    const modal = document.getElementById('settings-modal');
+    modal?.addEventListener('click', function handler(e) {
+      if (e.target === modal) { closeSettingsModal(); }
+    });
+  })();
+
+  function openSettingsModal() {
+    const modal = document.getElementById('settings-modal');
+    const dialog = document.getElementById('settings-dialog');
+    if (!modal || !dialog) return;
+    modal.classList.remove('hidden');
+    setTimeout(() => dialog.classList.remove('scale-95'), 10);
+    const radios = document.querySelectorAll('input[name="streak-type"]');
+    radios.forEach(r => {
+      (r as HTMLInputElement).checked = (r as HTMLInputElement).value === settings.streakType;
+    });
+    const qs = document.getElementById('settings-queue-size') as HTMLSelectElement;
+    if (qs) qs.value = settings.queueSize.toString();
+  }
+
+  function closeSettingsModal() {
+    const modal = document.getElementById('settings-modal');
+    const dialog = document.getElementById('settings-dialog');
+    if (!modal || !dialog) return;
+    dialog.classList.add('scale-95');
+    setTimeout(() => modal.classList.add('hidden'), 150);
+  }
+
+  function enterFocusLock(taskId: string) {
+    const task = tasks.find(t => t.id === taskId);
+    if (!task) return;
+    focusLockedTaskId = taskId;
+    isFocusLocked = true;
+    const lock = document.getElementById('focus-lock');
+    const title = document.getElementById('focus-lock-title');
+    const subtitle = document.getElementById('focus-lock-subtitle');
+    const nextEl = document.getElementById('focus-lock-next');
+    if (lock) lock.classList.remove('hidden');
+    if (title) title.textContent = task.title;
+    if (subtitle) subtitle.textContent = `${task.category} · ${task.priority} priority`;
+    if (nextEl) {
+      const queueIdx = queue.findIndex(t => t.id === taskId);
+      if (queueIdx >= 0 && queueIdx < queue.length - 1) {
+        nextEl.textContent = `Next: ${queue[queueIdx + 1].title}`;
+      } else {
+        nextEl.textContent = '— no more tasks in queue —';
+      }
+    }
+    startFocusOnTask(taskId, true);
+  }
+
+  function exitFocusLock() {
+    isFocusLocked = false;
+    focusLockedTaskId = null;
+    const lock = document.getElementById('focus-lock');
+    if (lock) lock.classList.add('hidden');
+  }
+
+  // === ONBOARDING TOUR ===
+  function startTour() {
+    tourStep = 0;
+    const overlay = document.getElementById('tour-overlay');
+    const tooltip = document.getElementById('tour-tooltip');
+    if (overlay) overlay.classList.remove('hidden');
+    if (tooltip) tooltip.classList.remove('hidden');
+    showTourStep();
+
+    // Listen to resize and scroll to reposition the spotlight and tooltip dynamically
+    window.addEventListener('resize', handleTourReposition);
+    window.addEventListener('scroll', handleTourReposition, { passive: true });
+  }
+
+  function endTour() {
+    const overlay = document.getElementById('tour-overlay');
+    const tooltip = document.getElementById('tour-tooltip');
+    const spotlight = document.getElementById('tour-spotlight');
+    if (overlay) overlay.classList.add('hidden');
+    if (tooltip) tooltip.classList.add('hidden');
+    if (spotlight) spotlight.classList.add('hidden');
+    tourStep = -1;
+    localStorage.setItem(TOUR_KEY, 'true');
+
+    // Clean up listeners
+    window.removeEventListener('resize', handleTourReposition);
+    window.removeEventListener('scroll', handleTourReposition);
+  }
+
+  function handleTourReposition() {
+    if (tourStep >= 0 && tourStep < TOUR_STEPS.length) {
+      const step = TOUR_STEPS[tourStep];
+      const target = document.getElementById(step.targetId);
+      if (target) {
+        positionTourElements(target, step.placement);
+      }
+    }
+  }
+
+  function showTourStep() {
+    const step = TOUR_STEPS[tourStep];
+    if (!step) { endTour(); return; }
+
+    const target = document.getElementById(step.targetId);
+    if (!target) { endTour(); return; }
+
+    // Title & desc
+    const titleEl = document.getElementById('tour-title');
+    const descEl = document.getElementById('tour-desc');
+    const indicator = document.getElementById('tour-step-indicator');
+    const prevBtn = document.getElementById('tour-prev-btn');
+    const nextBtn = document.getElementById('tour-next-btn');
+    if (titleEl) titleEl.textContent = step.title;
+    if (descEl) descEl.textContent = step.desc;
+    if (indicator) indicator.textContent = `${tourStep + 1} / ${TOUR_STEPS.length}`;
+
+    // Prev/Next buttons
+    if (prevBtn) {
+      if (tourStep === 0) { prevBtn.classList.add('hidden'); } else { prevBtn.classList.remove('hidden'); }
+    }
+    if (nextBtn) {
+      if (tourStep === TOUR_STEPS.length - 1) {
+        nextBtn.textContent = 'Done';
+      } else {
+        nextBtn.textContent = 'Next';
+      }
+    }
+
+    // Dots
+    const dotsContainer = document.getElementById('tour-dots');
+    if (dotsContainer) {
+      dotsContainer.innerHTML = TOUR_STEPS.map((_, i) =>
+        `<span class="w-1.5 h-1.5 rounded-full ${i === tourStep ? 'bg-primary' : 'bg-hairline-strong'} transition-all duration-300"></span>`
+      ).join('');
+    }
+
+    target.scrollIntoView({ behavior: 'instant', block: 'center' });
+    positionTourElements(target, step.placement);
+  }
+
+  function positionTourElements(target: HTMLElement, placement: string) {
+    const spotlight = document.getElementById('tour-spotlight');
+    const tooltip = document.getElementById('tour-tooltip');
+    if (!spotlight || !tooltip) return;
+
+    const rect = target.getBoundingClientRect();
+    const pad = 8;
+
+    // Spotlight
+    spotlight.classList.remove('hidden');
+    spotlight.style.top = `${rect.top - pad}px`;
+    spotlight.style.left = `${rect.left - pad}px`;
+    spotlight.style.width = `${rect.width + pad * 2}px`;
+    spotlight.style.height = `${rect.height + pad * 2}px`;
+
+    // Tooltip position
+    const gap = 12;
+    let top: number, left: number;
+    const tipWidth = Math.min(320, window.innerWidth - 32);
+
+    tooltip.style.width = `${tipWidth}px`;
+    tooltip.classList.remove('hidden');
+    const tipHeight = tooltip.offsetHeight; // Get the actual tooltip height dynamically
+
+    if (placement === 'bottom') {
+      top = rect.bottom + gap;
+      left = Math.max(16, Math.min(rect.left + rect.width / 2 - tipWidth / 2, window.innerWidth - tipWidth - 16));
+    } else if (placement === 'top') {
+      top = rect.top - gap - tipHeight;
+      if (top < 16) top = rect.bottom + gap; // fallback to bottom if not enough space
+      left = Math.max(16, Math.min(rect.left + rect.width / 2 - tipWidth / 2, window.innerWidth - tipWidth - 16));
+    } else {
+      top = rect.bottom + gap;
+      left = Math.max(16, Math.min(rect.left + rect.width / 2 - tipWidth / 2, window.innerWidth - tipWidth - 16));
+    }
+
+    tooltip.style.top = `${top}px`;
+    tooltip.style.left = `${left}px`;
+  }
+  init();
+  setupTimer();
+</script>
