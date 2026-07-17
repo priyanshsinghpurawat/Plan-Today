@@ -21,9 +21,10 @@ import Layout from '../layouts/Layout.astro';
       <div class="flex items-center gap-2">
         <!-- Quick Stats Badge (Desktop) -->
         <div class="hidden lg:flex items-center gap-2 bg-canvas-soft border border-hairline px-3 py-1 rounded-md text-xs shadow-level-1">
-          <div class="flex items-center gap-1" id="nav-streak-container" title="Day streak">
+          <div class="flex items-center gap-1 relative" id="nav-streak-container" title="Day streak">
             <span id="nav-streak-icon" class="text-warning text-xs">⚡</span>
             <span class="text-body font-mono font-medium" id="nav-streak-count">0</span>
+            <span id="streak-glow" class="absolute -inset-2 rounded-full pointer-events-none opacity-0 transition-opacity duration-300" style="box-shadow: 0 0 12px 4px var(--color-warning);"></span>
           </div>
           <span class="text-hairline-strong">·</span>
           <div class="flex items-center gap-1.5">
@@ -558,6 +559,9 @@ import Layout from '../layouts/Layout.astro';
     </div>
   </div>
 
+  <!-- Confetti Canvas Overlay -->
+  <canvas id="confetti-canvas" class="fixed inset-0 z-[9999] pointer-events-none hidden"></canvas>
+
   <!-- Toast Notification System container (slides in from bottom right) -->
   <div id="toast-container" class="fixed bottom-6 right-6 z-50 space-y-2 pointer-events-none max-w-sm w-full"></div>
 
@@ -706,6 +710,29 @@ import Layout from '../layouts/Layout.astro';
   #tour-tooltip {
     z-index: 102;
   }
+
+  /* Streak milestone animations */
+  .animate-streak-fire {
+    animation: streak-fire 1.5s ease-in-out infinite;
+  }
+  @keyframes streak-fire {
+    0%, 100% { text-shadow: 0 0 4px #f5a623, 0 0 8px #f5a623; }
+    50% { text-shadow: 0 0 8px #ff4d4d, 0 0 16px #ff4d4d; }
+  }
+  .animate-streak-skull {
+    animation: streak-skull 2s ease-in-out infinite;
+  }
+  @keyframes streak-skull {
+    0%, 100% { transform: scale(1); opacity: 0.8; }
+    50% { transform: scale(1.15); opacity: 1; }
+  }
+  .animate-streak-crown {
+    animation: streak-crown 1s ease-in-out infinite;
+  }
+  @keyframes streak-crown {
+    0%, 100% { transform: translateY(0) scale(1); filter: brightness(1); }
+    50% { transform: translateY(-3px) scale(1.08); filter: brightness(1.4); }
+  }
 </style>
 
 <script>
@@ -729,6 +756,7 @@ import Layout from '../layouts/Layout.astro';
   let timerRemaining = 1500;
   let timerRunning = false;
   let focusAccumulatedThisSession = 0;
+  let timerWasPaused = false;
   let linkedTaskId: string | null = null;
   let isZenMode = false;
   let completedOpen = false;
@@ -899,7 +927,8 @@ import Layout from '../layouts/Layout.astro';
     saveXpData();
     renderXpDisplay();
     if (xpData.level > oldLevel) {
-      showToast(`🎉 Level up! You're now level ${xpData.level}!`);
+      triggerConfetti();
+      showToast(`🎉 LEVEL UP! You're now level ${xpData.level}!`);
       const statLvl = document.getElementById('stat-level');
       if (statLvl) { statLvl.classList.remove('animate-level-up'); void statLvl.offsetWidth; statLvl.classList.add('animate-level-up'); }
     }
@@ -933,14 +962,32 @@ import Layout from '../layouts/Layout.astro';
     const streakEl = document.getElementById('nav-streak-count');
     if (streakEl) streakEl.textContent = streakData.current.toString();
     const icon = document.getElementById('nav-streak-icon');
-    if (icon) {
-      if (streakData.current >= 3) {
-        icon.innerHTML = '🔥';
-      } else if (streakData.current > 0) {
-        icon.innerHTML = '⚡';
-      } else {
-        icon.innerHTML = '○';
-      }
+    const glow = document.getElementById('streak-glow');
+    if (!icon) return;
+    icon.removeAttribute('class');
+    icon.classList.add('text-xs');
+    if (glow) {
+      glow.classList.add('opacity-0');
+      glow.classList.remove('opacity-60', 'opacity-80', 'opacity-100');
+    }
+    if (streakData.current >= 30) {
+      icon.innerHTML = '👑';
+      icon.classList.add('animate-streak-crown');
+      if (glow) { glow.classList.remove('opacity-0'); glow.classList.add('opacity-100'); }
+    } else if (streakData.current >= 14) {
+      icon.innerHTML = '💀';
+      icon.classList.add('animate-streak-skull');
+      if (glow) { glow.classList.remove('opacity-0'); glow.classList.add('opacity-80'); }
+    } else if (streakData.current >= 7) {
+      icon.innerHTML = '🔥';
+      icon.classList.add('animate-streak-fire');
+      if (glow) { glow.classList.remove('opacity-0'); glow.classList.add('opacity-60'); }
+    } else if (streakData.current >= 3) {
+      icon.innerHTML = '🔥';
+    } else if (streakData.current > 0) {
+      icon.innerHTML = '⚡';
+    } else {
+      icon.innerHTML = '○';
     }
   }
 
@@ -1173,8 +1220,8 @@ import Layout from '../layouts/Layout.astro';
     if (activeTasks.length === 0) {
       activeList.innerHTML = `
         <div class="border border-hairline border-dashed rounded-lg p-8 bg-canvas text-center shadow-level-1">
-          <p class="body-sm text-mute">No active tasks in this space.</p>
-          <p class="text-[11px] text-mute/80 mt-1 font-mono">Create a task to get started.</p>
+          <p class="body-sm text-mute">Nothing queued. The void stares back.</p>
+          <p class="text-[11px] text-mute/80 mt-1 font-mono">Drop something in. Anything. ⌘⇧A</p>
         </div>
       `;
     } else {
@@ -1184,7 +1231,7 @@ import Layout from '../layouts/Layout.astro';
     // Render completed
     if (completedTasks.length === 0) {
       completedList.innerHTML = `
-        <p class="body-sm text-mute text-center py-4">No completed tasks yet.</p>
+        <p class="body-sm text-mute text-center py-4">Nothing conquered yet. The war is young.</p>
       `;
     } else {
       completedList.innerHTML = completedTasks.map(t => createTaskRowHTML(t)).join('');
@@ -1421,6 +1468,7 @@ import Layout from '../layouts/Layout.astro';
   function startTimer() {
     if (timerRunning) return;
 
+    timerWasPaused = false;
     timerRunning = true;
     updateTimerControlUI(true);
 
@@ -1454,6 +1502,7 @@ import Layout from '../layouts/Layout.astro';
   function pauseTimer() {
     if (!timerRunning || activeTimerId === null) return;
 
+    timerWasPaused = true;
     window.clearInterval(activeTimerId);
     activeTimerId = null;
     timerRunning = false;
@@ -1473,11 +1522,12 @@ import Layout from '../layouts/Layout.astro';
   function handleTimerCompletion() {
     pauseTimer();
     timerRemaining = timerDuration;
+    const wasPerfect = !timerWasPaused;
     focusAccumulatedThisSession = 0;
     updateTimerDisplay();
 
-    // Trigger success audio cue
     playAlertSound();
+    triggerConfetti();
 
     let completionMsg = 'Focus block completed! Well focused.';
     if (linkedTaskId) {
@@ -1485,6 +1535,12 @@ import Layout from '../layouts/Layout.astro';
       if (task) {
         completionMsg = `Focus block completed for: "${task.title}"!`;
       }
+    }
+
+    if (wasPerfect) {
+      const bonusXp = 25;
+      addXp(bonusXp);
+      completionMsg += ` +${bonusXp} XP no-pause bonus!`;
     }
 
     showToast(completionMsg);
@@ -1513,6 +1569,50 @@ import Layout from '../layouts/Layout.astro';
     } catch (e) {
       // AudioContext fallback
     }
+  }
+
+  function triggerConfetti() {
+    const canvas = document.getElementById('confetti-canvas') as HTMLCanvasElement;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    canvas.classList.remove('hidden');
+    const COLORS = ['#0070f3','#50e3c2','#f5a623','#ee0000','#7928ca','#ff0080','#00dfd8','#171717'];
+    const pieces: any[] = [];
+    for (let i = 0; i < 150; i++) {
+      pieces.push({
+        x: Math.random() * canvas.width, y: Math.random() * canvas.height - canvas.height,
+        w: Math.random() * 10 + 5, h: Math.random() * 6 + 3,
+        color: COLORS[Math.floor(Math.random() * COLORS.length)],
+        vx: (Math.random() - 0.5) * 4, vy: Math.random() * 3 + 2,
+        rot: Math.random() * 360, rotSpeed: (Math.random() - 0.5) * 8, opacity: 1
+      });
+    }
+    let frames = 0;
+    function animate() {
+      frames++;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      let alive = false;
+      pieces.forEach(p => {
+        p.x += p.vx; p.y += p.vy; p.vy += 0.05; p.rot += p.rotSpeed;
+        if (frames > 90) p.opacity -= 0.04;
+        if (p.opacity > 0) {
+          alive = true;
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate((p.rot * Math.PI) / 180);
+          ctx.globalAlpha = Math.max(0, p.opacity);
+          ctx.fillStyle = p.color;
+          ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+          ctx.restore();
+        }
+      });
+      if (alive) requestAnimationFrame(animate);
+      else { ctx.clearRect(0,0,canvas.width,canvas.height); canvas.classList.add('hidden'); }
+    }
+    animate();
   }
 
   function updateTimerDisplay() {
