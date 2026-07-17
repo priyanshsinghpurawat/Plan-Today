@@ -13,7 +13,7 @@ import Layout from '../layouts/Layout.astro';
           <polygon points="60,18 86,45 60,72" fill="currentColor"/>
         </svg>
         <span class="hidden sm:inline font-sans font-semibold tracking-[-0.6px] text-lg text-ink">
-          Plan today. <span class="text-mute font-normal group-hover:text-primary transition-colors">Play tomorrow.</span>
+          Plan today. <span class="text-mute font-normal nav-hover-gradient">Play tomorrow.</span>
         </span>
       </a>
 
@@ -89,17 +89,24 @@ import Layout from '../layouts/Layout.astro';
       <span class="caption-mono uppercase tracking-wider text-mute mb-3 block">Developer focus suite</span>
       <!-- Headline (Sentence case, period-terminated) -->
       <h1 class="display-xl text-ink mb-4">
-        Plan today. Play tomorrow.
+        Plan today. <span class="animate-gradient-text">Play tomorrow.</span>
       </h1>
       <!-- Lead Paragraph -->
       <p class="body-lg text-body mb-6 max-w-2xl">
         A minimalist workspace engineered to keep your focus intact. Categorize tasks, log deep-work metrics with the focus engine, and claim your tomorrow.
       </p>
 
-      <!-- Keyboard Tip Badge -->
-      <div class="inline-flex items-center gap-2 bg-canvas border border-hairline px-3 py-1.5 rounded-pill text-xs shadow-level-2">
-        <span class="w-2 h-2 rounded-full bg-gradient-develop-start animate-pulse-soft"></span>
-        <span class="text-body font-mono">Tip: Press <kbd class="font-semibold text-ink">Ctrl + K</kbd> to launch the command menu.</span>
+      <!-- AI Badge & Keyboard Tip -->
+      <div class="inline-flex items-center gap-3 flex-wrap">
+        <div class="inline-flex items-center gap-2 bg-surface-inverse text-on-surface-inverse border border-cyan/30 px-3 py-1.5 rounded-pill text-xs shadow-level-2">
+          <span class="w-1.5 h-1.5 rounded-full bg-cyan animate-pulse"></span>
+          <span class="font-mono font-medium tracking-wider text-[10px] uppercase">AI Focus Engine</span>
+          <span class="text-[10px] font-mono text-cyan/60">v1</span>
+        </div>
+        <div class="inline-flex items-center gap-2 bg-canvas border border-hairline px-3 py-1.5 rounded-pill text-xs shadow-level-2">
+          <span class="w-2 h-2 rounded-full bg-gradient-develop-start animate-pulse-soft"></span>
+          <span class="text-body font-mono">Tip: Press <kbd class="font-semibold text-ink">Ctrl + K</kbd> to launch the command menu.</span>
+        </div>
       </div>
     </div>
   </section>
@@ -125,7 +132,7 @@ import Layout from '../layouts/Layout.astro';
     <div id="left-column" class="lg:col-span-5 space-y-6 transition-all duration-500">
       
       <!-- active cpu focus timer (showcase dark band theme) -->
-      <div class="bg-surface-inverse text-on-surface-inverse rounded-lg p-6 shadow-level-4 relative overflow-hidden group">
+      <div class="bg-surface-inverse/90 backdrop-blur-sm text-on-surface-inverse rounded-lg p-6 shadow-level-4 relative overflow-hidden group timer-glass-card">
         <!-- Accent Glow background -->
         <div class="absolute inset-0 bg-radial-gradient from-violet-deep/10 via-transparent to-transparent pointer-events-none"></div>
         <div class="absolute -right-16 -top-16 w-36 h-36 bg-gradient-develop-end/10 rounded-full blur-2xl group-hover:scale-125 transition-transform duration-1000"></div>
@@ -562,6 +569,9 @@ import Layout from '../layouts/Layout.astro';
   <!-- Confetti Canvas Overlay -->
   <canvas id="confetti-canvas" class="fixed inset-0 z-[9999] pointer-events-none hidden"></canvas>
 
+  <!-- Scanline Overlay (AI screen aesthetic) -->
+  <div class="scanline-overlay"></div>
+
   <!-- Toast Notification System container (slides in from bottom right) -->
   <div id="toast-container" class="fixed bottom-6 right-6 z-50 space-y-2 pointer-events-none max-w-sm w-full"></div>
 
@@ -588,6 +598,15 @@ import Layout from '../layouts/Layout.astro';
 
 <style>
   /* Custom Styles for Interactive Elements */
+
+  /* Nav hover gradient */
+  .nav-hover-gradient:hover {
+    background: linear-gradient(90deg, var(--color-cyan), var(--color-gradient-develop-start), var(--color-violet));
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
   
   .tab-pill {
     font-family: var(--font-sans);
@@ -709,6 +728,74 @@ import Layout from '../layouts/Layout.astro';
   }
   #tour-tooltip {
     z-index: 102;
+  }
+
+  /* Scanline overlay */
+  .scanline-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9998;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.015) 2px,
+      rgba(0,0,0,0.015) 4px
+    );
+  }
+  :root.dark .scanline-overlay {
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(255,255,255,0.012) 2px,
+      rgba(255,255,255,0.012) 4px
+    );
+  }
+
+  /* Animated gradient text */
+  @keyframes gradient-flow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  .animate-gradient-text {
+    background: linear-gradient(90deg, var(--color-cyan), var(--color-gradient-develop-start), var(--color-violet), var(--color-cyan));
+    background-size: 300% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradient-flow 4s ease-in-out infinite;
+  }
+
+  /* Glass timer card glow border */
+  .timer-glass-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, var(--color-cyan), var(--color-violet), var(--color-gradient-develop-start), var(--color-cyan));
+    background-size: 300% 300%;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: gradient-flow 6s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  /* Terminal cursor blink */
+  @keyframes blink-cursor {
+    0%, 100% { border-right-color: var(--color-ink); }
+    50% { border-right-color: transparent; }
+  }
+  #quick-add-input, #task-search-input, #cmd-input, #task-title-input {
+    caret-color: var(--color-cyan);
+  }
+  #quick-add-input:focus {
+    border-right: 2px solid var(--color-ink);
+    animation: blink-cursor 1s step-end infinite;
   }
 
   /* Streak milestone animations */
